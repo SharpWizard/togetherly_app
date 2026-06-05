@@ -21,7 +21,13 @@
             <h1 class="fw-bold mb-1"><i class="fas fa-shield-halved me-2"></i>Admin Dashboard</h1>
             <p class="mb-0" style="opacity:.85;">Manage members, posts and verification.</p>
         </div>
-        <a href="{{ route('admin.users') }}" class="btn btn-light fw-semibold"><i class="fas fa-users me-1"></i>Manage Users</a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.reports') }}" class="btn btn-light fw-semibold position-relative">
+                <i class="fas fa-flag me-1"></i>Reports
+                @if ($stats['reports'] > 0)<span class="badge bg-danger rounded-pill ms-1">{{ $stats['reports'] }}</span>@endif
+            </a>
+            <a href="{{ route('admin.users') }}" class="btn btn-light fw-semibold"><i class="fas fa-users me-1"></i>Manage Users</a>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
@@ -32,6 +38,7 @@
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['claims'] }}</div><div class="l">Claims</div></div></div>
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['bookings'] }}</div><div class="l">Bookings</div></div></div>
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['messages'] }}</div><div class="l">Messages</div></div></div>
+        <div class="col-6 col-lg-3"><a href="{{ route('admin.reports') }}" class="text-decoration-none"><div class="tg-stat"><div class="v text-danger">{{ $stats['reports'] }}</div><div class="l">Open Reports</div></div></a></div>
     </div>
 
     <div class="row g-4">

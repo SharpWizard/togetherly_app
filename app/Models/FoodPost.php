@@ -19,6 +19,7 @@ class FoodPost extends Model
         'image',
         'food_type',
         'status',
+        'views',
         'neighborhood',
         'latitude',
         'longitude',

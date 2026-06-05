@@ -79,6 +79,9 @@ class SkillPostController extends Controller
 
     public function show(SkillPost $skillPost)
     {
+        if ($skillPost->user_id !== Auth::id()) {
+            $skillPost->increment('views');
+        }
         return view('skills.show', compact('skillPost'));
     }
 

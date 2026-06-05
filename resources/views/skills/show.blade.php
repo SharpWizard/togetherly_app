@@ -60,9 +60,10 @@
                             </div>
                         </a>
                         @if (!$isOwner)
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
                                 <a href="{{ route('messages.conversation', $skillPost->user_id) }}" class="btn btn-outline-primary"><i class="fas fa-envelope me-1"></i>Message</a>
                                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ratingModal"><i class="fas fa-star me-1"></i>Rate</button>
+                                <button class="btn btn-link text-muted text-decoration-none btn-sm" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="fas fa-flag me-1"></i>Report</button>
                             </div>
                         @endif
                     </div>
@@ -139,6 +140,7 @@
                     <div class="small text-muted">
                         <div class="mb-1"><i class="fas fa-location-dot me-2"></i>{{ $skillPost->neighborhood }}</div>
                         <div class="mb-1"><i class="fas fa-layer-group me-2"></i>{{ ucfirst($skillPost->category) }}</div>
+                        <div class="mb-1"><i class="fas fa-eye me-2"></i>{{ $skillPost->views }} views</div>
                         <div><i class="fas fa-clock me-2"></i>Posted {{ $skillPost->created_at->diffForHumans() }}</div>
                     </div>
                 </div>
@@ -173,6 +175,35 @@
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Submit Rating</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Report modal --}}
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:18px;">
+            <form action="{{ route('reports.skill', $skillPost) }}" method="POST">@csrf
+                <div class="modal-header border-0"><h5 class="modal-title"><i class="fas fa-flag text-danger me-2"></i>Report this skill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <label class="form-label">Reason</label>
+                    <select class="form-select mb-3" name="reason" required>
+                        <option value="">Select a reason…</option>
+                        <option value="Spam or scam">Spam or scam</option>
+                        <option value="Inappropriate content">Inappropriate content</option>
+                        <option value="Misleading">Misleading</option>
+                        <option value="Not a real skill offer">Not a real skill offer</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label class="form-label">Details (optional)</label>
+                    <textarea class="form-control" name="details" rows="3" placeholder="Tell the moderators more…"></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Submit Report</button>
                 </div>
             </form>
         </div>

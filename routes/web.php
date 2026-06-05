@@ -95,6 +95,10 @@ Route::middleware('auth')->group(function () {
     // Global search
     Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search');
 
+    // Reports (flag a post)
+    Route::post('/food/{foodPost}/report', [\App\Http\Controllers\ReportController::class, 'storeFood'])->name('reports.food');
+    Route::post('/skills/{skillPost}/report', [\App\Http\Controllers\ReportController::class, 'storeSkill'])->name('reports.skill');
+
     // Public profiles
     Route::get('/users/{user}', [ProfileController::class, 'show'])->name('profile.show');
 
@@ -118,5 +122,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/{user}/admin', [AdminController::class, 'toggleAdmin'])->name('users.admin');
         Route::delete('/food/{foodPost}', [AdminController::class, 'deleteFood'])->name('food.delete');
         Route::delete('/skills/{skillPost}', [AdminController::class, 'deleteSkill'])->name('skills.delete');
+        Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+        Route::post('/reports/{report}/dismiss', [AdminController::class, 'dismissReport'])->name('reports.dismiss');
+        Route::post('/reports/{report}/action', [AdminController::class, 'actionReport'])->name('reports.action');
     });
 });

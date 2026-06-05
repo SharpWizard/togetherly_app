@@ -24,6 +24,7 @@ class SkillPost extends Model
         'latitude',
         'longitude',
         'status',
+        'views',
     ];
 
     protected $casts = [

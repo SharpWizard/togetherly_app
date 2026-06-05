@@ -10,6 +10,7 @@ use App\Models\SkillPost;
 use App\Models\Claim;
 use App\Models\Booking;
 use App\Models\Message;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -24,6 +25,7 @@ class AdminController extends Controller
             'bookings' => Booking::count(),
             'messages' => Message::count(),
             'verified' => UserProfile::where('is_verified', true)->count(),
+            'reports'  => Report::where('status', 'open')->count(),
         ];
 
         $recentFood   = FoodPost::with('user')->latest()->limit(5)->get();
@@ -73,5 +75,35 @@ class AdminController extends Controller
     {
         $skillPost->delete();
         return back()->with('success', 'Skill post removed.');
+    }
+
+    public function reports()
+    {
+        $reports = Report::with('reporter', 'foodPost.user', 'skillPost.user')
+            ->orderByRaw("FIELD(status,'open','actioned','dismissed')")
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.reports', compact('reports'));
+    }
+
+    public function dismissReport(Report $report)
+    {
+        $report->update(['status' => 'dismissed']);
+        return back()->with('success', 'Report dismissed.');
+    }
+
+    public function actionReport(Report $report)
+    {
+        // Remove the reported post, then mark the report actioned.
+        if ($report->foodPost) {
+            $report->foodPost->delete();
+        }
+        if ($report->skillPost) {
+            $report->skillPost->delete();
+        }
+        $report->update(['status' => 'actioned']);
+
+        return back()->with('success', 'Post removed and report resolved.');
     }
 }

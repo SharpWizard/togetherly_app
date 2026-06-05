@@ -83,6 +83,9 @@ class FoodPostController extends Controller
 
     public function show(FoodPost $foodPost)
     {
+        if ($foodPost->user_id !== Auth::id()) {
+            $foodPost->increment('views');
+        }
         return view('food.show', compact('foodPost'));
     }
 
