@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Ensure PHP populates $_ENV from the container environment so Laravel's env()
+# can read platform-injected variables (APP_KEY, DB_*, etc.) under `artisan serve`.
+RUN echo "variables_order=EGPCS" > /usr/local/etc/php/conf.d/zz-railway.ini
+
 WORKDIR /app
 
 # Install PHP dependencies first (better build caching)
