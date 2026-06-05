@@ -2,6 +2,13 @@
 
 A Laravel-based community platform where users can share surplus food and skills with their neighbors.
 
+## 🌐 Live Demo
+
+**https://togetherly-app-production.up.railway.app**
+
+Click **Demo Login** on the login page, or use `demo@togetherly.app` / `password`.
+Admin panel: `admin@togetherly.app` / `password`.
+
 ## Features
 
 - **Food Sharing**: Post surplus food, browse available food from neighbors, claim items locally
