@@ -27,6 +27,13 @@ RUN cp -n .env.example .env || true \
 # Storage needs to be writable
 RUN chmod -R 775 storage bootstrap/cache
 
-# Railway injects $PORT at runtime. Migrate + seed (idempotent) then serve.
-CMD php artisan migrate --force --seed \
+# Remove the build-time .env so the running container uses ONLY the platform's
+# injected environment variables (APP_KEY, DB_*, etc.). A stale .env with an
+# empty APP_KEY would otherwise cause "No application encryption key" errors.
+RUN rm -f .env
+
+# Railway injects $PORT at runtime. Clear any cached config, migrate + seed
+# (idempotent), then serve.
+CMD php artisan config:clear \
+    && php artisan migrate --force --seed \
     && php artisan serve --host 0.0.0.0 --port ${PORT:-8080}
