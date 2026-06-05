@@ -92,6 +92,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete'])->name('bookings.complete');
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
 
+    // Global search
+    Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
     // Public profiles
     Route::get('/users/{user}', [ProfileController::class, 'show'])->name('profile.show');
 

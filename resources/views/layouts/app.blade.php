@@ -145,6 +145,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                @auth
+                    <form class="d-flex mx-lg-3 my-2 my-lg-0 flex-grow-1" style="max-width:380px;" action="{{ route('search') }}" method="GET">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                            <input type="search" name="q" class="form-control border-start-0" placeholder="Search food, skills, people…" value="{{ request('q') }}" style="border-radius:0 30px 30px 0;">
+                        </div>
+                    </form>
+                @endauth
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
                     @auth
                         <li class="nav-item">

@@ -26,10 +26,17 @@
     <a href="{{ route('skills.index') }}" class="text-decoration-none text-muted mb-3 d-inline-block"><i class="fas fa-arrow-left me-1"></i> Back to skills</a>
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="tg-show-banner mb-4">
-                <i class="fas fa-lightbulb"></i>
-                <span class="badge bg-light text-dark cat">{{ $skillPost->category }}</span>
-            </div>
+            @if ($skillPost->image)
+                <div class="position-relative mb-4">
+                    <img src="{{ asset('storage/'.$skillPost->image) }}" alt="{{ $skillPost->title }}" style="width:100%;height:320px;object-fit:cover;border-radius:18px;">
+                    <span class="badge bg-success position-absolute" style="bottom:16px;left:16px;font-size:.9rem;">{{ $skillPost->category }}</span>
+                </div>
+            @else
+                <div class="tg-show-banner mb-4">
+                    <i class="fas fa-lightbulb"></i>
+                    <span class="badge bg-light text-dark cat">{{ $skillPost->category }}</span>
+                </div>
+            @endif
 
             <div class="card">
                 <div class="card-body p-4">

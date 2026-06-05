@@ -54,18 +54,23 @@ class SkillPostController extends Controller
             'description' => 'required|string',
             'category' => 'required|string',
             'skill_level' => 'required|in:beginner,intermediate,advanced',
-            'available_times' => 'nullable|json',
+            'available_times' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $user = Auth::user();
         $profile = $user->profile;
 
-        $data = $request->all();
+        $data = $request->only(['title', 'description', 'category', 'skill_level', 'available_times']);
         $data['user_id'] = $user->id;
         $data['neighborhood'] = $profile?->neighborhood ?? 'Unknown';
         $data['latitude'] = $profile?->latitude ?? 0;
         $data['longitude'] = $profile?->longitude ?? 0;
         $data['status'] = 'active';
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('skills', 'public');
+        }
 
         SkillPost::create($data);
 
@@ -97,11 +102,21 @@ class SkillPostController extends Controller
             'description' => 'required|string',
             'category' => 'required|string',
             'skill_level' => 'required|in:beginner,intermediate,advanced',
-            'available_times' => 'nullable|json',
+            'available_times' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        $skillPost->update($request->all());
+        $data = $request->only(['title', 'description', 'category', 'skill_level', 'available_times', 'status']);
+
+        if ($request->hasFile('image')) {
+            if ($skillPost->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($skillPost->image);
+            }
+            $data['image'] = $request->file('image')->store('skills', 'public');
+        }
+
+        $skillPost->update($data);
 
         return redirect()->route('skills.show', $skillPost)->with('success', 'Skill post updated!');
     }

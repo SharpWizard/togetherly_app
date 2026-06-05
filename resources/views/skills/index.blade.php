@@ -79,10 +79,17 @@
             @foreach ($skillPosts as $post)
                 <div class="col-md-6 col-lg-4">
                     <div class="tg-card-post">
-                        <div class="tg-card-img-ph">
-                            <i class="fas fa-lightbulb"></i>
-                            <span class="badge bg-light text-dark cat">{{ $post->category }}</span>
-                        </div>
+                        @if ($post->image)
+                            <div class="position-relative">
+                                <img src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}" style="height:160px;width:100%;object-fit:cover;">
+                                <span class="badge bg-success position-absolute" style="bottom:14px;left:14px;">{{ $post->category }}</span>
+                            </div>
+                        @else
+                            <div class="tg-card-img-ph">
+                                <i class="fas fa-lightbulb"></i>
+                                <span class="badge bg-light text-dark cat">{{ $post->category }}</span>
+                            </div>
+                        @endif
                         <div class="p-3">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="fw-bold mb-0">{{ $post->title }}</h6>

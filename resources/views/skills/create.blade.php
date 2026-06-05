@@ -13,8 +13,16 @@
                     </h2>
                     <p class="text-muted mb-4">Teach what you know. Help others learn. Build community connections!</p>
 
-                    <form action="{{ route('skills.store') }}" method="POST">
+                    <form action="{{ route('skills.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Skill Photo (optional)</label>
+                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                   id="image" name="image" accept="image/*">
+                            <small class="text-muted">A photo of your work helps attract learners. Max 2MB.</small>
+                            @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </div>
 
                         <div class="mb-3">
                             <label for="title" class="form-label">Skill Name *</label>

@@ -12,9 +12,20 @@
                         <i class="fas fa-lightbulb text-success"></i> Edit Skill Post
                     </h2>
 
-                    <form action="{{ route('skills.update', $skillPost) }}" method="POST">
+                    <form action="{{ route('skills.update', $skillPost) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Skill Photo (optional)</label>
+                            @if ($skillPost->image)
+                                <div class="mb-2"><img src="{{ asset('storage/'.$skillPost->image) }}" style="max-width:200px;border-radius:10px;"></div>
+                            @endif
+                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                   id="image" name="image" accept="image/*">
+                            <small class="text-muted">Leave empty to keep the current photo. Max 2MB.</small>
+                            @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </div>
 
                         <div class="mb-3">
                             <label for="title" class="form-label">Skill Name *</label>

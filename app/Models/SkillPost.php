@@ -16,6 +16,7 @@ class SkillPost extends Model
         'user_id',
         'title',
         'description',
+        'image',
         'category',
         'skill_level',
         'available_times',
