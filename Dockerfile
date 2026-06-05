@@ -36,8 +36,10 @@ RUN chmod -R 775 storage bootstrap/cache
 # empty APP_KEY would otherwise cause "No application encryption key" errors.
 RUN rm -f .env
 
-# Railway injects $PORT at runtime. Clear any cached config, migrate + seed
-# (idempotent), then serve.
-CMD php artisan config:clear \
+# At runtime, materialise a .env file from the platform-injected environment
+# variables (the way Laravel expects to run), then clear cached config, run
+# migrations + seed (idempotent), and serve on Railway's $PORT.
+CMD printenv | grep -E '^(APP_|DB_|LOG_|SESSION_|CACHE_|QUEUE_|FILESYSTEM_|MAIL_)' > .env \
+    && php artisan config:clear \
     && php artisan migrate --force --seed \
     && php artisan serve --host 0.0.0.0 --port ${PORT:-8080}
