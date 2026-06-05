@@ -10,9 +10,13 @@ class TrustProxies extends Middleware
     /**
      * The trusted proxies for this application.
      *
+     * Railway (and most PaaS hosts) put the app behind a TLS-terminating proxy,
+     * so we trust all proxies and honour the X-Forwarded-* headers. This lets
+     * Laravel detect the original HTTPS scheme and generate secure URLs.
+     *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
