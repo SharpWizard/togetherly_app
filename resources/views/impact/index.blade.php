@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Community Impact')
+@section('title', __('app.impact.title'))
 
 @section('extra_css')
 <style>
@@ -31,9 +31,9 @@
 <div class="container my-4 my-lg-5">
     <div class="tg-impact-hero mb-4">
         <div class="inner">
-            <span class="badge bg-light text-success mb-2">Why It Matters</span>
-            <h1 class="fw-bold">Our Community Impact</h1>
-            <p class="mb-0" style="opacity:.9;">Together we're cutting waste, sharing knowledge, and building a warmer community.</p>
+            <span class="badge bg-light text-success mb-2">{{ __('app.impact.why_matters') }}</span>
+            <h1 class="fw-bold">{{ __('app.impact.heading') }}</h1>
+            <p class="mb-0" style="opacity:.9;">{{ __('app.impact.subtitle') }}</p>
         </div>
     </div>
 
@@ -43,21 +43,21 @@
             <div class="tg-big">
                 <div class="ic" style="background:linear-gradient(135deg,#2d8f7f,#45b4a1)"><i class="fas fa-bowl-food"></i></div>
                 <div class="v">{{ number_format($stats['mealsSaved']) }}</div>
-                <div class="l">Meals rescued from waste</div>
+                <div class="l">{{ __('app.impact.meals_saved') }}</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="tg-big">
                 <div class="ic" style="background:linear-gradient(135deg,#56ab7b,#7fe0cd)"><i class="fas fa-leaf"></i></div>
                 <div class="v">{{ number_format($stats['co2Saved'], 1) }} kg</div>
-                <div class="l">Estimated CO₂e avoided</div>
+                <div class="l">{{ __('app.impact.co2_saved') }}</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="tg-big">
                 <div class="ic" style="background:linear-gradient(135deg,#ff8c42,#ff6f5e)"><i class="fas fa-won-sign"></i></div>
                 <div class="v">₩{{ number_format($stats['moneySaved']) }}</div>
-                <div class="l">Value of free skills shared</div>
+                <div class="l">{{ __('app.impact.money_saved') }}</div>
             </div>
         </div>
     </div>
@@ -65,21 +65,21 @@
     {{-- Activity stats --}}
     <div class="row g-3 mb-5">
         <div class="col-6 col-lg-3">
-            <div class="tg-big"><div class="v text-warning">{{ $stats['foodShared'] }}</div><div class="l">Food posts shared</div></div>
+            <div class="tg-big"><div class="v text-warning">{{ $stats['foodShared'] }}</div><div class="l">{{ __('app.impact.food_shared') }}</div></div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="tg-big"><div class="v" style="color:var(--tg-green)">{{ $stats['skillsShared'] }}</div><div class="l">Skills offered</div></div>
+            <div class="tg-big"><div class="v" style="color:var(--tg-green)">{{ $stats['skillsShared'] }}</div><div class="l">{{ __('app.impact.skills_offered') }}</div></div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="tg-big"><div class="v text-warning">{{ $stats['foodClaimed'] }}</div><div class="l">Food exchanges</div></div>
+            <div class="tg-big"><div class="v text-warning">{{ $stats['foodClaimed'] }}</div><div class="l">{{ __('app.impact.food_exchanges') }}</div></div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="tg-big"><div class="v" style="color:var(--tg-green)">{{ $stats['sessionsBooked'] }}</div><div class="l">Sessions booked</div></div>
+            <div class="tg-big"><div class="v" style="color:var(--tg-green)">{{ $stats['sessionsBooked'] }}</div><div class="l">{{ __('app.impact.sessions_booked') }}</div></div>
         </div>
     </div>
 
     {{-- Leaderboard --}}
-    <h4 class="section-title mb-3"><i class="fas fa-trophy text-warning me-2"></i>Top Community Contributors</h4>
+    <h4 class="section-title mb-3"><i class="fas fa-trophy text-warning me-2"></i>{{ __('app.impact.top_contributors') }}</h4>
     <div class="tg-lead">
         @forelse ($leaderboard as $i => $member)
             <div class="row-item">
@@ -91,16 +91,16 @@
                 @endif
                 <div class="flex-grow-1">
                     <a href="{{ route('profile.show', $member) }}" class="fw-bold text-decoration-none text-dark">{{ $member->name }}</a>
-                    @if ($member->profile?->is_verified)<i class="fas fa-circle-check text-success ms-1" title="Verified"></i>@endif
+                    @if ($member->profile?->is_verified)<i class="fas fa-circle-check text-success ms-1" title="{{ __('app.impact.verified') }}"></i>@endif
                     <div class="small text-muted">⭐ {{ number_format($member->rating,1) }} · {{ $member->profile?->neighborhood }}</div>
                 </div>
                 <div class="text-end">
                     <div class="fw-bold" style="color:var(--tg-green)">{{ $member->contribution }}</div>
-                    <small class="text-muted">contributions</small>
+                    <small class="text-muted">{{ __('app.impact.contributions') }}</small>
                 </div>
             </div>
         @empty
-            <div class="p-4 text-center text-muted">No contributors yet.</div>
+            <div class="p-4 text-center text-muted">{{ __('app.impact.no_contributors') }}</div>
         @endforelse
     </div>
 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Food Posts')
+@section('title', __('app.food.index_title'))
 
 @section('extra_css')
 <style>
@@ -26,10 +26,10 @@
     <div class="tg-page-head mb-4">
         <div class="inner d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <h1 class="fw-bold mb-1"><i class="fas fa-utensils me-2"></i>Food Near You</h1>
-                <p class="mb-0" style="opacity:.9;"><i class="fas fa-location-dot me-1"></i>{{ Auth::user()->profile?->neighborhood ?? 'Not set' }} · {{ $foodPosts->total() }} available</p>
+                <h1 class="fw-bold mb-1"><i class="fas fa-utensils me-2"></i>{{ __('app.food.near_you') }}</h1>
+                <p class="mb-0" style="opacity:.9;"><i class="fas fa-location-dot me-1"></i>{{ Auth::user()->profile?->neighborhood ?? __('app.food.not_set') }} · {{ $foodPosts->total() }} {{ __('app.food.available_count') }}</p>
             </div>
-            <a href="{{ route('food.create') }}" class="btn btn-light fw-semibold" style="border-radius:12px;"><i class="fas fa-plus me-1"></i> Share Food</a>
+            <a href="{{ route('food.create') }}" class="btn btn-light fw-semibold" style="border-radius:12px;"><i class="fas fa-plus me-1"></i> {{ __('app.food.share_food') }}</a>
         </div>
     </div>
 
@@ -39,38 +39,38 @@
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="Search food…">
+                    <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="{{ __('app.food.search_placeholder') }}">
                 </div>
             </div>
             <div class="col-md-3">
                 <select name="type" class="form-select">
-                    <option value="">All types</option>
-                    @foreach (['cooked'=>'Cooked Meal','raw'=>'Raw Ingredients','bakery'=>'Bakery','drinks'=>'Drinks','desserts'=>'Desserts','leftovers'=>'Leftovers','other'=>'Other'] as $val=>$lbl)
-                        <option value="{{ $val }}" {{ request('type')===$val?'selected':'' }}>{{ $lbl }}</option>
+                    <option value="">{{ __('app.food_types.all') }}</option>
+                    @foreach (['cooked','raw','bakery','drinks','desserts','leftovers','other'] as $val)
+                        <option value="{{ $val }}" {{ request('type')===$val?'selected':'' }}>{{ __('app.food_types.'.$val) }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-md-2">
                 <select name="sort" class="form-select">
-                    <option value="latest" {{ request('sort')!=='expiring'?'selected':'' }}>Newest</option>
-                    <option value="expiring" {{ request('sort')==='expiring'?'selected':'' }}>Expiring soon</option>
+                    <option value="latest" {{ request('sort')!=='expiring'?'selected':'' }}>{{ __('app.food.sort_newest') }}</option>
+                    <option value="expiring" {{ request('sort')==='expiring'?'selected':'' }}>{{ __('app.food.sort_expiring') }}</option>
                 </select>
             </div>
             <div class="col-md-2 d-grid">
-                <button class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filter</button>
+                <button class="btn btn-primary"><i class="fas fa-filter me-1"></i>{{ __('app.food.filter') }}</button>
             </div>
         </div>
         @if (request('q') || request('type') || request('sort'))
-            <div class="mt-2"><a href="{{ route('food.index') }}" class="small text-decoration-none text-muted"><i class="fas fa-xmark me-1"></i>Clear filters</a></div>
+            <div class="mt-2"><a href="{{ route('food.index') }}" class="small text-decoration-none text-muted"><i class="fas fa-xmark me-1"></i>{{ __('app.food.clear_filters') }}</a></div>
         @endif
     </form>
 
     @if ($foodPosts->isEmpty())
         <div class="tg-empty">
             <i class="fas fa-utensils fa-2x text-warning mb-3"></i>
-            <h5>No food posts found</h5>
-            <p class="text-muted">Be the first to share surplus food with your neighborhood!</p>
-            <a href="{{ route('food.create') }}" class="btn btn-secondary"><i class="fas fa-plus me-1"></i> Share Food</a>
+            <h5>{{ __('app.food.none_found') }}</h5>
+            <p class="text-muted">{{ __('app.food.be_first') }}</p>
+            <a href="{{ route('food.create') }}" class="btn btn-secondary"><i class="fas fa-plus me-1"></i> {{ __('app.food.share_food') }}</a>
         </div>
     @else
         <div class="row g-4">
@@ -83,7 +83,7 @@
                             @else
                                 <div class="tg-card-img-ph"><i class="fas fa-utensils"></i></div>
                             @endif
-                            <span class="badge bg-warning position-absolute" style="top:14px;left:14px;">{{ $post->food_type }}</span>
+                            <span class="badge bg-warning position-absolute" style="top:14px;left:14px;">{{ __('app.food_types.'.$post->food_type) }}</span>
                         </div>
                         <div class="p-3">
                             <h6 class="fw-bold mb-2">{{ $post->title }}</h6>
@@ -93,10 +93,10 @@
                                 <small class="text-muted">{{ $post->user->name }} · ⭐ {{ number_format($post->user->rating,1) }}</small>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
-                                <span><i class="fas fa-box me-1"></i>Qty: {{ $post->quantity }}</span>
+                                <span><i class="fas fa-box me-1"></i>{{ __('app.food.qty') }}: {{ $post->quantity }}</span>
                                 <span><i class="fas fa-clock me-1"></i>{{ $post->expires_at->diffForHumans() }}</span>
                             </div>
-                            <a href="{{ route('food.show', $post) }}" class="btn btn-primary w-100"><i class="fas fa-circle-info me-1"></i> View Details</a>
+                            <a href="{{ route('food.show', $post) }}" class="btn btn-primary w-100"><i class="fas fa-circle-info me-1"></i> {{ __('app.common.view_details') }}</a>
                         </div>
                     </div>
                 </div>

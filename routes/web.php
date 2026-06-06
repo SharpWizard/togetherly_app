@@ -19,6 +19,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// Language switcher (English / Korean) — available on every page
+Route::get('/lang/{locale}', function (string $locale) {
+    if (in_array($locale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {
+        session(['locale' => $locale]);
+    }
+
+    return redirect()->back();
+})->name('locale.switch');
+
 // Auth Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');

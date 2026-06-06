@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Skills')
+@section('title', __('app.skills.index_title'))
 
 @section('extra_css')
 <style>
@@ -26,10 +26,10 @@
     <div class="tg-page-head mb-4">
         <div class="inner d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <h1 class="fw-bold mb-1"><i class="fas fa-lightbulb me-2"></i>Skills Near You</h1>
-                <p class="mb-0" style="opacity:.9;"><i class="fas fa-location-dot me-1"></i>{{ Auth::user()->profile?->neighborhood ?? 'Not set' }} · {{ $skillPosts->total() }} available</p>
+                <h1 class="fw-bold mb-1"><i class="fas fa-lightbulb me-2"></i>{{ __('app.skills.near_you') }}</h1>
+                <p class="mb-0" style="opacity:.9;"><i class="fas fa-location-dot me-1"></i>{{ Auth::user()->profile?->neighborhood ?? __('app.food.not_set') }} · {{ $skillPosts->total() }} {{ __('app.skills.available_count') }}</p>
             </div>
-            <a href="{{ route('skills.create') }}" class="btn btn-light fw-semibold" style="border-radius:12px;"><i class="fas fa-plus me-1"></i> Share Skill</a>
+            <a href="{{ route('skills.create') }}" class="btn btn-light fw-semibold" style="border-radius:12px;"><i class="fas fa-plus me-1"></i> {{ __('app.skills.share_skill') }}</a>
         </div>
     </div>
 
@@ -39,40 +39,40 @@
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="Search skills…">
+                    <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="{{ __('app.skills.search_placeholder') }}">
                 </div>
             </div>
             <div class="col-md-3">
                 <select name="category" class="form-select">
-                    <option value="">All categories</option>
-                    @foreach (['languages'=>'Languages','cooking'=>'Cooking','music'=>'Music','coding'=>'Coding','fitness'=>'Fitness','art'=>'Art','business'=>'Business','other'=>'Other'] as $val=>$lbl)
-                        <option value="{{ $val }}" {{ request('category')===$val?'selected':'' }}>{{ $lbl }}</option>
+                    <option value="">{{ __('app.skill_categories.all') }}</option>
+                    @foreach (['languages','cooking','music','coding','fitness','art','business','other'] as $val)
+                        <option value="{{ $val }}" {{ request('category')===$val?'selected':'' }}>{{ __('app.skill_categories.'.$val) }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-md-2">
                 <select name="level" class="form-select">
-                    <option value="">Any level</option>
-                    @foreach (['beginner'=>'Beginner','intermediate'=>'Intermediate','advanced'=>'Advanced'] as $val=>$lbl)
-                        <option value="{{ $val }}" {{ request('level')===$val?'selected':'' }}>{{ $lbl }}</option>
+                    <option value="">{{ __('app.skill_levels.any') }}</option>
+                    @foreach (['beginner','intermediate','advanced'] as $val)
+                        <option value="{{ $val }}" {{ request('level')===$val?'selected':'' }}>{{ __('app.skill_levels.'.$val) }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-md-2 d-grid">
-                <button class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filter</button>
+                <button class="btn btn-primary"><i class="fas fa-filter me-1"></i>{{ __('app.skills.filter') }}</button>
             </div>
         </div>
         @if (request('q') || request('category') || request('level'))
-            <div class="mt-2"><a href="{{ route('skills.index') }}" class="small text-decoration-none text-muted"><i class="fas fa-xmark me-1"></i>Clear filters</a></div>
+            <div class="mt-2"><a href="{{ route('skills.index') }}" class="small text-decoration-none text-muted"><i class="fas fa-xmark me-1"></i>{{ __('app.skills.clear_filters') }}</a></div>
         @endif
     </form>
 
     @if ($skillPosts->isEmpty())
         <div class="tg-empty">
             <i class="fas fa-lightbulb fa-2x text-success mb-3"></i>
-            <h5>No skills found</h5>
-            <p class="text-muted">Share your knowledge with the community — teach a skill for free!</p>
-            <a href="{{ route('skills.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Share Skill</a>
+            <h5>{{ __('app.skills.none_found') }}</h5>
+            <p class="text-muted">{{ __('app.skills.share_knowledge') }}</p>
+            <a href="{{ route('skills.create') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i> {{ __('app.skills.share_skill') }}</a>
         </div>
     @else
         <div class="row g-4">
@@ -82,25 +82,25 @@
                         @if ($post->image)
                             <div class="position-relative">
                                 <img src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}" style="height:160px;width:100%;object-fit:cover;">
-                                <span class="badge bg-success position-absolute" style="bottom:14px;left:14px;">{{ $post->category }}</span>
+                                <span class="badge bg-success position-absolute" style="bottom:14px;left:14px;">{{ __('app.skill_categories.'.$post->category) }}</span>
                             </div>
                         @else
                             <div class="tg-card-img-ph">
                                 <i class="fas fa-lightbulb"></i>
-                                <span class="badge bg-light text-dark cat">{{ $post->category }}</span>
+                                <span class="badge bg-light text-dark cat">{{ __('app.skill_categories.'.$post->category) }}</span>
                             </div>
                         @endif
                         <div class="p-3">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="fw-bold mb-0">{{ $post->title }}</h6>
-                                <span class="badge bg-info">{{ $post->skill_level }}</span>
+                                <span class="badge bg-info">{{ __('app.skill_levels.'.$post->skill_level) }}</span>
                             </div>
                             <p class="text-muted small mb-3">{{ Str::limit($post->description, 75) }}</p>
                             <div class="d-flex align-items-center gap-2 mb-3">
                                 <span class="tg-mini-avatar">{{ strtoupper(substr($post->user->name,0,1)) }}</span>
                                 <small class="text-muted">{{ $post->user->name }} · ⭐ {{ number_format($post->user->rating,1) }}</small>
                             </div>
-                            <a href="{{ route('skills.show', $post) }}" class="btn btn-primary w-100"><i class="fas fa-circle-info me-1"></i> View Details</a>
+                            <a href="{{ route('skills.show', $post) }}" class="btn btn-primary w-100"><i class="fas fa-circle-info me-1"></i> {{ __('app.common.view_details') }}</a>
                         </div>
                     </div>
                 </div>

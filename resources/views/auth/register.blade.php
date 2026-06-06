@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register')
+@section('title', __('app.auth.register_title'))
 
 @section('extra_css')
 <style>
@@ -37,11 +37,11 @@
                             <div class="tg-auth-visual h-100">
                                 <div class="inner">
                                     <div class="tg-auth-logo">T</div>
-                                    <h2>Join Togetherly today.</h2>
-                                    <p class="mt-3" style="opacity:.85;">Free for everyone. Set your neighborhood and start sharing in 60 seconds.</p>
-                                    <div class="tg-auth-stat"><span class="v">130kg</span><span>food saved per person / year</span></div>
-                                    <div class="tg-auth-stat"><span class="v">68%</span><span>have skills worth sharing</span></div>
-                                    <div class="tg-auth-stat"><span class="v">100%</span><span>free, no paywalls</span></div>
+                                    <h2>{{ __('app.auth.register_welcome') }}</h2>
+                                    <p class="mt-3" style="opacity:.85;">{{ __('app.auth.register_visual_sub') }}</p>
+                                    <div class="tg-auth-stat"><span class="v">130kg</span><span>{{ __('app.auth.register_stat1') }}</span></div>
+                                    <div class="tg-auth-stat"><span class="v">68%</span><span>{{ __('app.auth.register_stat2') }}</span></div>
+                                    <div class="tg-auth-stat"><span class="v">100%</span><span>{{ __('app.auth.register_stat3') }}</span></div>
                                 </div>
                             </div>
                         </div>
@@ -49,13 +49,13 @@
                         {{-- Form side --}}
                         <div class="col-md-7">
                             <div class="tg-auth-body">
-                                <h3 class="fw-bold mb-1">Create your account</h3>
-                                <p class="text-muted mb-3">Share food. Share skills. Build community.</p>
+                                <h3 class="fw-bold mb-1">{{ __('app.auth.register_heading') }}</h3>
+                                <p class="text-muted mb-3">{{ __('app.auth.register_subtitle') }}</p>
 
                                 <div class="tg-demo-box mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <span class="small"><i class="fas fa-wand-magic-sparkles text-success me-1"></i> Just want to look around?</span>
+                                    <span class="small"><i class="fas fa-wand-magic-sparkles text-success me-1"></i> {{ __('app.auth.just_looking') }}</span>
                                     <form action="{{ route('demo.login') }}" method="POST">@csrf
-                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-bolt me-1"></i>Demo Login</button>
+                                        <button class="btn btn-secondary btn-sm"><i class="fas fa-bolt me-1"></i>{{ __('app.auth.demo_login') }}</button>
                                     </form>
                                 </div>
 
@@ -63,13 +63,13 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="name" class="form-label">Full Name</label>
+                                            <label for="name" class="form-label">{{ __('app.auth.full_name') }}</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                    id="name" name="name" value="{{ old('name') }}" required>
                                             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <label for="phone" class="form-label">{{ __('app.auth.phone') }}</label>
                                             <input type="tel" class="form-control @error('phone') is-invalid @enderror"
                                                    id="phone" name="phone" value="{{ old('phone') }}" placeholder="010-1234-5678" required>
                                             @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -77,42 +77,42 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email Address</label>
+                                        <label for="email" class="form-label">{{ __('app.auth.email') }}</label>
                                         <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                id="email" name="email" value="{{ old('email') }}" required>
                                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="neighborhood" class="form-label">Neighborhood / District</label>
+                                        <label for="neighborhood" class="form-label">{{ __('app.auth.neighborhood') }}</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-white"><i class="fas fa-location-dot text-success"></i></span>
                                             <input type="text" class="form-control @error('neighborhood') is-invalid @enderror"
                                                    id="neighborhood" name="neighborhood" value="{{ old('neighborhood') }}"
-                                                   placeholder="e.g., Haeundae-gu, Busan" required>
+                                                   placeholder="{{ __('app.auth.neighborhood_placeholder') }}" required>
                                             @error('neighborhood')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="password" class="form-label">Password</label>
+                                            <label for="password" class="form-label">{{ __('app.auth.password') }}</label>
                                             <input type="password" class="form-control @error('password') is-invalid @enderror"
                                                    id="password" name="password" required>
                                             @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         </div>
                                         <div class="col-md-6 mb-4">
-                                            <label for="password_confirmation" class="form-label">Confirm Password</label>
+                                            <label for="password_confirmation" class="form-label">{{ __('app.auth.confirm_password') }}</label>
                                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                                         </div>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary w-100 mb-3">
-                                        <i class="fas fa-user-plus me-1"></i> Create Account
+                                        <i class="fas fa-user-plus me-1"></i> {{ __('app.auth.create_account') }}
                                     </button>
 
                                     <p class="text-center mb-0 text-muted">
-                                        Already have an account? <a href="{{ route('login') }}" class="fw-semibold text-decoration-none">Login here</a>
+                                        {{ __('app.auth.have_account') }} <a href="{{ route('login') }}" class="fw-semibold text-decoration-none">{{ __('app.auth.login_here') }}</a>
                                     </p>
                                 </form>
                             </div>

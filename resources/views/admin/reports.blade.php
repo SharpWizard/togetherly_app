@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reports')
+@section('title', __('app.admin.reports_title'))
 
 @section('extra_css')
 <style>
@@ -14,8 +14,8 @@
 @section('content')
 <div class="container my-4 my-lg-5" style="max-width:900px;">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-        <h2 class="section-title mb-0"><i class="fas fa-flag me-2"></i>Reports</h2>
-        <a href="{{ route('admin.index') }}" class="btn btn-light btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to dashboard</a>
+        <h2 class="section-title mb-0"><i class="fas fa-flag me-2"></i>{{ __('app.admin.reports_title') }}</h2>
+        <a href="{{ route('admin.index') }}" class="btn btn-light btn-sm"><i class="fas fa-arrow-left me-1"></i>{{ __('app.admin.back_to_dashboard') }}</a>
     </div>
 
     @forelse ($reports as $report)
@@ -24,30 +24,30 @@
             <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
                 <div>
                     <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="badge {{ $isFood ? 'bg-warning' : 'bg-success' }}">{{ $isFood ? 'Food' : 'Skill' }}</span>
+                        <span class="badge {{ $isFood ? 'bg-warning' : 'bg-success' }}">{{ $isFood ? __('app.admin.badge_food') : __('app.admin.badge_skill') }}</span>
                         <strong>{{ $report->reason }}</strong>
-                        <span class="tg-status s-{{ $report->status }}">{{ $report->status }}</span>
+                        <span class="tg-status s-{{ $report->status }}">{{ __('app.admin.status_'.$report->status) }}</span>
                     </div>
                     @if ($post)
                         <div class="mb-1">
-                            Post: <a href="{{ $isFood ? route('food.show', $post) : route('skills.show', $post) }}" target="_blank" class="fw-semibold text-decoration-none">{{ $post->title }}</a>
-                            <span class="text-muted">by {{ $post->user->name ?? '—' }}</span>
+                            {{ __('app.admin.post') }} <a href="{{ $isFood ? route('food.show', $post) : route('skills.show', $post) }}" target="_blank" class="fw-semibold text-decoration-none">{{ $post->title }}</a>
+                            <span class="text-muted">{{ __('app.admin.by') }} {{ $post->user->name ?? '—' }}</span>
                         </div>
                     @else
-                        <div class="text-muted mb-1"><em>Post already removed</em></div>
+                        <div class="text-muted mb-1"><em>{{ __('app.admin.post_removed') }}</em></div>
                     @endif
                     @if ($report->details)<div class="small text-muted"><i class="fas fa-quote-left me-1"></i>{{ $report->details }}</div>@endif
-                    <small class="text-muted">Reported by {{ $report->reporter->name ?? '—' }} · {{ $report->created_at->diffForHumans() }}</small>
+                    <small class="text-muted">{{ __('app.admin.reported_by') }} {{ $report->reporter->name ?? '—' }} · {{ $report->created_at->diffForHumans() }}</small>
                 </div>
                 @if ($report->status === 'open')
                     <div class="d-flex gap-2">
                         @if ($post)
-                            <form action="{{ route('admin.reports.action', $report) }}" method="POST" onsubmit="return confirm('Delete the reported post?')">@csrf
-                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash me-1"></i>Remove post</button>
+                            <form action="{{ route('admin.reports.action', $report) }}" method="POST" onsubmit="return confirm('{{ __('app.admin.remove_post_confirm') }}')">@csrf
+                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash me-1"></i>{{ __('app.admin.remove_post') }}</button>
                             </form>
                         @endif
                         <form action="{{ route('admin.reports.dismiss', $report) }}" method="POST">@csrf
-                            <button class="btn btn-light btn-sm">Dismiss</button>
+                            <button class="btn btn-light btn-sm">{{ __('app.admin.dismiss') }}</button>
                         </form>
                     </div>
                 @endif
@@ -56,8 +56,8 @@
     @empty
         <div class="tg-empty">
             <i class="fas fa-flag fa-2x text-muted mb-3"></i>
-            <h5>No reports</h5>
-            <p class="text-muted mb-0">Reported posts will appear here for review.</p>
+            <h5>{{ __('app.admin.no_reports') }}</h5>
+            <p class="text-muted mb-0">{{ __('app.admin.no_reports_sub') }}</p>
         </div>
     @endforelse
 

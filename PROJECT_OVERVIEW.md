@@ -449,7 +449,7 @@ All foundation features working:
 ## Credits
 
 **Project**: Togetherly - Master's in Entrepreneurship Final Project
-**University**: Kyungsung University, Busan
+**University**: Busan University of Foreign Studies, Busan
 **Created**: 2024
 
 ---

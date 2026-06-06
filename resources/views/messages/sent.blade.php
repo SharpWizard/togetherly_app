@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sent')
+@section('title', __('app.messages.sent_title'))
 
 @section('extra_css')
 <style>
@@ -17,12 +17,12 @@
 
 @section('content')
 <div class="container my-4 my-lg-5">
-    <h2 class="section-title mb-4"><i class="fas fa-comments me-2"></i>Messages</h2>
+    <h2 class="section-title mb-4"><i class="fas fa-comments me-2"></i>{{ __('app.messages.title') }}</h2>
     <div class="row g-4">
         <div class="col-md-3 tg-msg-side">
             <div class="list-group">
-                <a href="{{ route('messages.inbox') }}" class="list-group-item list-group-item-action"><i class="fas fa-inbox me-2"></i> Conversations</a>
-                <a href="{{ route('messages.sent') }}" class="list-group-item list-group-item-action active"><i class="fas fa-paper-plane me-2"></i> Sent</a>
+                <a href="{{ route('messages.inbox') }}" class="list-group-item list-group-item-action"><i class="fas fa-inbox me-2"></i> {{ __('app.messages.conversations') }}</a>
+                <a href="{{ route('messages.sent') }}" class="list-group-item list-group-item-action active"><i class="fas fa-paper-plane me-2"></i> {{ __('app.messages.sent') }}</a>
             </div>
         </div>
 
@@ -30,8 +30,8 @@
             @if ($threads->isEmpty())
                 <div class="tg-empty">
                     <i class="fas fa-paper-plane fa-2x text-muted mb-3"></i>
-                    <h5>No sent messages yet</h5>
-                    <p class="text-muted mb-0">Reach out to a neighbor from any food or skill post.</p>
+                    <h5>{{ __('app.messages.no_sent') }}</h5>
+                    <p class="text-muted mb-0">{{ __('app.messages.reach_out') }}</p>
                 </div>
             @else
                 @foreach ($threads as $thread)
@@ -48,7 +48,7 @@
                                     <small class="text-muted">{{ $thread['last']->created_at->diffForHumans() }}</small>
                                 </div>
                                 <p class="mb-0 text-muted small">
-                                    @if ($thread['last']->sender_id === Auth::id())<span class="text-muted">You: </span>@endif
+                                    @if ($thread['last']->sender_id === Auth::id())<span class="text-muted">{{ __('app.messages.you') }} </span>@endif
                                     {{ Str::limit($thread['last']->message, 80) }}
                                 </p>
                             </div>

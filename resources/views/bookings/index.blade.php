@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Bookings')
+@section('title', __('app.bookings.title'))
 
 @section('extra_css')
 <style>
@@ -14,26 +14,26 @@
 
 @section('content')
 <div class="container my-4 my-lg-5" style="max-width:820px;">
-    <h2 class="section-title mb-4"><i class="fas fa-calendar-check me-2"></i>My Skill Bookings</h2>
+    <h2 class="section-title mb-4"><i class="fas fa-calendar-check me-2"></i>{{ __('app.bookings.heading') }}</h2>
 
     @forelse ($bookings as $booking)
         <div class="tg-row d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
-                    <h6 class="mb-0 fw-bold">{{ $booking->skillPost->title ?? 'Removed skill' }}</h6>
-                    <span class="tg-status s-{{ $booking->status }}">{{ $booking->status }}</span>
+                    <h6 class="mb-0 fw-bold">{{ $booking->skillPost->title ?? __('app.bookings.removed_skill') }}</h6>
+                    <span class="tg-status s-{{ $booking->status }}">{{ __('app.statuses.'.$booking->status) }}</span>
                 </div>
-                <small class="text-muted">With {{ $booking->teacher->name }} · {{ $booking->created_at->diffForHumans() }}</small>
+                <small class="text-muted">{{ __('app.bookings.with') }} {{ $booking->teacher->name }} · {{ $booking->created_at->diffForHumans() }}</small>
                 @if ($booking->preferred_time)<div class="small text-muted mt-1"><i class="fas fa-clock me-1"></i>{{ $booking->preferred_time }}</div>@endif
                 @if ($booking->message)<div class="small text-muted mt-1"><i class="fas fa-quote-left me-1"></i>{{ $booking->message }}</div>@endif
             </div>
             <div class="d-flex gap-2">
                 @if ($booking->skillPost)
-                    <a href="{{ route('skills.show', $booking->skillPost) }}" class="btn btn-light btn-sm">View</a>
+                    <a href="{{ route('skills.show', $booking->skillPost) }}" class="btn btn-light btn-sm">{{ __('app.common.view') }}</a>
                 @endif
                 @if (in_array($booking->status, ['pending','accepted']))
                     <form action="{{ route('bookings.cancel', $booking) }}" method="POST">@csrf
-                        <button class="btn btn-outline-primary btn-sm">Cancel</button>
+                        <button class="btn btn-outline-primary btn-sm">{{ __('app.common.cancel') }}</button>
                     </form>
                 @endif
             </div>
@@ -41,9 +41,9 @@
     @empty
         <div class="tg-empty">
             <i class="fas fa-calendar-check fa-2x text-muted mb-3"></i>
-            <h5>No bookings yet</h5>
-            <p class="text-muted mb-3">Find a skill you'd like to learn and request a free session.</p>
-            <a href="{{ route('skills.index') }}" class="btn btn-primary">Browse Skills</a>
+            <h5>{{ __('app.bookings.none_title') }}</h5>
+            <p class="text-muted mb-3">{{ __('app.bookings.none_sub') }}</p>
+            <a href="{{ route('skills.index') }}" class="btn btn-primary">{{ __('app.bookings.browse_skills') }}</a>
         </div>
     @endforelse
 

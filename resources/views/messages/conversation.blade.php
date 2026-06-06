@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Chat with ' . $otherUser->name)
+@section('title', __('app.messages.chat_with', ['name' => $otherUser->name]))
 
 @section('extra_css')
 <style>
@@ -68,7 +68,7 @@
                 @empty
                     <div class="tg-empty-chat" id="emptyChat">
                         <i class="fas fa-comments fa-3x mb-3 opacity-50"></i>
-                        <p>No messages yet.<br>Say hello to {{ $otherUser->name }}! 👋</p>
+                        <p>{{ __('app.messages.no_messages') }}<br>{{ __('app.messages.say_hello', ['name' => $otherUser->name]) }}</p>
                     </div>
                 @endforelse
             </div>
@@ -77,12 +77,12 @@
             <div class="tg-chat-foot">
                 <form id="chatForm" class="d-flex gap-2 align-items-center" autocomplete="off">
                     @csrf
-                    <input type="text" id="chatInput" class="form-control" placeholder="Type a message…" required maxlength="2000">
+                    <input type="text" id="chatInput" class="form-control" placeholder="{{ __('app.messages.type_message') }}" required maxlength="2000">
                     <button type="submit" class="btn btn-primary tg-send-btn"><i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
         </div>
-        <p class="text-center text-muted small mt-2"><i class="fas fa-lock me-1"></i>Messages are private between you and {{ $otherUser->name }}.</p>
+        <p class="text-center text-muted small mt-2"><i class="fas fa-lock me-1"></i>{{ __('app.messages.private_note', ['name' => $otherUser->name]) }}</p>
     </div>
 </div>
 
@@ -137,7 +137,7 @@
         .then(data => {
             if (data.ok && data.message) { addBubble(data.message); lastId = Math.max(lastId, data.message.id); }
         })
-        .catch(() => { input.value = text; alert('Could not send. Try again.'); })
+        .catch(() => { input.value = text; alert(@json(__('app.messages.send_failed'))); })
         .finally(() => { sending = false; input.focus(); });
     });
 

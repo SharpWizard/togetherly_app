@@ -179,6 +179,32 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'name',
+        'email' => 'email address',
+        'password' => 'password',
+        'password_confirmation' => 'password confirmation',
+        'phone' => 'phone number',
+        'neighborhood' => 'neighborhood',
+        'bio' => 'bio',
+        'avatar' => 'profile photo',
+        'title' => 'title',
+        'description' => 'description',
+        'food_type' => 'food type',
+        'quantity' => 'quantity',
+        'expires_at' => 'available-until time',
+        'status' => 'status',
+        'image' => 'photo',
+        'category' => 'category',
+        'skill_level' => 'skill level',
+        'available_times' => 'available times',
+        'message' => 'message',
+        'preferred_time' => 'preferred time',
+        'rating' => 'rating',
+        'comment' => 'comment',
+        'reason' => 'reason',
+        'details' => 'details',
+        'account_type' => 'account type',
+    ],
 
 ];

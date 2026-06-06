@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Users')
+@section('title', __('app.admin.users_title'))
 
 @section('extra_css')
 <style>
@@ -15,15 +15,15 @@
 @section('content')
 <div class="container my-4 my-lg-5">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-        <h2 class="section-title mb-0"><i class="fas fa-users me-2"></i>Manage Users</h2>
-        <a href="{{ route('admin.index') }}" class="btn btn-light btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to dashboard</a>
+        <h2 class="section-title mb-0"><i class="fas fa-users me-2"></i>{{ __('app.admin.users_title') }}</h2>
+        <a href="{{ route('admin.index') }}" class="btn btn-light btn-sm"><i class="fas fa-arrow-left me-1"></i>{{ __('app.admin.back_to_dashboard') }}</a>
     </div>
 
     <form method="GET" class="card border-0 p-3 mb-4">
         <div class="input-group">
             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-            <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="Search by name or email…">
-            <button class="btn btn-primary">Search</button>
+            <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0" placeholder="{{ __('app.admin.search_users') }}">
+            <button class="btn btn-primary">{{ __('app.admin.search') }}</button>
         </div>
     </form>
 
@@ -38,21 +38,21 @@
                 <div class="flex-grow-1">
                     <div class="fw-bold">
                         {{ $u->name }}
-                        @if ($u->profile?->is_verified)<i class="fas fa-circle-check text-success ms-1" title="Verified"></i>@endif
-                        @if ($u->is_admin)<span class="badge bg-primary ms-1">Admin</span>@endif
-                        @if ($u->profile && $u->profile->account_type !== 'individual')<span class="badge bg-info ms-1">{{ ucfirst($u->profile->account_type) }}</span>@endif
+                        @if ($u->profile?->is_verified)<i class="fas fa-circle-check text-success ms-1" title="{{ __('app.admin.verified') }}"></i>@endif
+                        @if ($u->is_admin)<span class="badge bg-primary ms-1">{{ __('app.admin.admin_badge') }}</span>@endif
+                        @if ($u->profile && $u->profile->account_type !== 'individual')<span class="badge bg-info ms-1">{{ __('app.profile.'.$u->profile->account_type) }}</span>@endif
                     </div>
                     <div class="small text-muted">{{ $u->email }} · {{ $u->profile?->neighborhood ?? '—' }} · ⭐ {{ number_format($u->rating,1) }}</div>
                 </div>
                 <div class="d-flex gap-2">
                     <form action="{{ route('admin.users.verify', $u) }}" method="POST">@csrf
                         <button class="btn btn-sm {{ $u->profile?->is_verified ? 'btn-secondary' : 'btn-outline-primary' }}">
-                            <i class="fas fa-circle-check me-1"></i>{{ $u->profile?->is_verified ? 'Unverify' : 'Verify' }}
+                            <i class="fas fa-circle-check me-1"></i>{{ $u->profile?->is_verified ? __('app.admin.unverify') : __('app.admin.verify') }}
                         </button>
                     </form>
                     <form action="{{ route('admin.users.admin', $u) }}" method="POST">@csrf
                         <button class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-shield-halved me-1"></i>{{ $u->is_admin ? 'Revoke' : 'Make Admin' }}
+                            <i class="fas fa-shield-halved me-1"></i>{{ $u->is_admin ? __('app.admin.revoke') : __('app.admin.make_admin') }}
                         </button>
                     </form>
                 </div>

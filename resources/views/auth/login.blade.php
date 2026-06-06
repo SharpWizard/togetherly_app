@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', __('app.auth.login_title'))
 
 @section('extra_css')
 <style>
@@ -40,11 +40,11 @@
                             <div class="tg-auth-visual h-100">
                                 <div class="inner">
                                     <div class="tg-auth-logo">T</div>
-                                    <h2>Welcome back to your community.</h2>
-                                    <p class="mt-3" style="opacity:.85;">Share food, share skills, and connect with neighbors near you.</p>
-                                    <div class="tg-auth-feature"><i class="fas fa-utensils"></i><span>Claim surplus food nearby</span></div>
-                                    <div class="tg-auth-feature"><i class="fas fa-lightbulb"></i><span>Learn skills for free</span></div>
-                                    <div class="tg-auth-feature"><i class="fas fa-heart"></i><span>Build real connections</span></div>
+                                    <h2>{{ __('app.auth.login_welcome') }}</h2>
+                                    <p class="mt-3" style="opacity:.85;">{{ __('app.auth.login_visual_sub') }}</p>
+                                    <div class="tg-auth-feature"><i class="fas fa-utensils"></i><span>{{ __('app.auth.login_feat1') }}</span></div>
+                                    <div class="tg-auth-feature"><i class="fas fa-lightbulb"></i><span>{{ __('app.auth.login_feat2') }}</span></div>
+                                    <div class="tg-auth-feature"><i class="fas fa-heart"></i><span>{{ __('app.auth.login_feat3') }}</span></div>
                                 </div>
                             </div>
                         </div>
@@ -52,38 +52,38 @@
                         {{-- Form side --}}
                         <div class="col-md-7">
                             <div class="tg-auth-body">
-                                <h3 class="fw-bold mb-1">Login</h3>
-                                <p class="text-muted mb-4">Enter your details to continue.</p>
+                                <h3 class="fw-bold mb-1">{{ __('app.auth.login_heading') }}</h3>
+                                <p class="text-muted mb-4">{{ __('app.auth.login_subtitle') }}</p>
 
                                 {{-- Demo quick login --}}
                                 <div class="tg-demo-box mb-3">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                         <div>
-                                            <strong><i class="fas fa-wand-magic-sparkles me-1 text-success"></i> Try the demo</strong>
-                                            <div class="small text-muted">No sign-up needed — explore instantly.</div>
+                                            <strong><i class="fas fa-wand-magic-sparkles me-1 text-success"></i> {{ __('app.auth.try_demo') }}</strong>
+                                            <div class="small text-muted">{{ __('app.auth.demo_no_signup') }}</div>
                                         </div>
                                         <form action="{{ route('demo.login') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-secondary btn-sm">
-                                                <i class="fas fa-bolt me-1"></i> Demo Login
+                                                <i class="fas fa-bolt me-1"></i> {{ __('app.auth.demo_login') }}
                                             </button>
                                         </form>
                                     </div>
                                 </div>
 
-                                <div class="tg-divider">or login with email</div>
+                                <div class="tg-divider">{{ __('app.auth.or_login_email') }}</div>
 
                                 <form action="{{ route('store.login') }}" method="POST">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email Address</label>
+                                        <label for="email" class="form-label">{{ __('app.auth.email') }}</label>
                                         <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                id="email" name="email" value="{{ old('email', 'demo@togetherly.app') }}" required autofocus>
                                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
+                                        <label for="password" class="form-label">{{ __('app.auth.password') }}</label>
                                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                                                id="password" name="password" value="password" required>
                                         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -91,15 +91,15 @@
 
                                     <div class="mb-4 form-check">
                                         <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                        <label class="form-check-label" for="remember">Remember me</label>
+                                        <label class="form-check-label" for="remember">{{ __('app.auth.remember_me') }}</label>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary w-100 mb-3">
-                                        <i class="fas fa-right-to-bracket me-1"></i> Login
+                                        <i class="fas fa-right-to-bracket me-1"></i> {{ __('app.auth.login_heading') }}
                                     </button>
 
                                     <p class="text-center mb-0 text-muted">
-                                        Don't have an account? <a href="{{ route('register') }}" class="fw-semibold text-decoration-none">Register here</a>
+                                        {{ __('app.auth.no_account') }} <a href="{{ route('register') }}" class="fw-semibold text-decoration-none">{{ __('app.auth.register_here') }}</a>
                                     </p>
                                 </form>
                             </div>

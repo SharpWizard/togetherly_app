@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Welcome')
+@section('title', __('app.welcome.page_title'))
 
 @section('extra_css')
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -239,21 +239,20 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <span class="tg-chip"><span class="dot"></span> Now live in your neighborhood</span>
-                <h1>Share Food.<br>Share Skills.<br><span class="tg-grad-text">Build Community.</span></h1>
-                <p class="subtag">A neighborhood platform that turns surplus food and unused skills into
-                    real connections — starting in Busan, built for everyone.</p>
+                <span class="tg-chip"><span class="dot"></span> {{ __('app.welcome.hero_chip') }}</span>
+                <h1>{{ __('app.welcome.hero_l1') }}<br>{{ __('app.welcome.hero_l2') }}<br><span class="tg-grad-text">{{ __('app.welcome.hero_l3') }}</span></h1>
+                <p class="subtag">{{ __('app.welcome.hero_subtag') }}</p>
 
                 <div class="mt-4 d-flex flex-wrap gap-2">
                     @auth
                         <a href="{{ route('dashboard') }}" class="tg-btn-glow">
-                            <i class="fas fa-gauge-high me-2"></i>Go to Dashboard
+                            <i class="fas fa-gauge-high me-2"></i>{{ __('app.welcome.cta_dashboard') }}
                         </a>
                     @else
                         <a href="{{ route('register') }}" class="tg-btn-glow">
-                            Get Started — Free <i class="fas fa-arrow-right ms-2"></i>
+                            {{ __('app.welcome.cta_get_started') }} <i class="fas fa-arrow-right ms-2"></i>
                         </a>
-                        <a href="{{ route('login') }}" class="tg-btn-ghost">Login</a>
+                        <a href="{{ route('login') }}" class="tg-btn-ghost">{{ __('app.nav.login') }}</a>
                     @endauth
                 </div>
             </div>
@@ -265,25 +264,25 @@
                     <div class="tg-float-card fc1">
                         <div class="fc-top">
                             <div class="fc-ic" style="background:linear-gradient(135deg,#ff8c42,#ff6f5e)"><i class="fas fa-utensils"></i></div>
-                            <div><h6>Homemade Kimchi</h6><small>0.4 km away</small></div>
+                            <div><h6>{{ __('app.welcome.fc1_title') }}</h6><small>{{ __('app.welcome.fc1_meta') }}</small></div>
                         </div>
-                        <span class="fc-tag" style="background:#ffe9d9;color:#d9651f">FREE · 3 portions</span>
+                        <span class="fc-tag" style="background:#ffe9d9;color:#d9651f">{{ __('app.welcome.fc1_tag') }}</span>
                     </div>
 
                     <div class="tg-float-card fc2">
                         <div class="fc-top">
                             <div class="fc-ic" style="background:linear-gradient(135deg,#2d8f7f,#45b4a1)"><i class="fas fa-lightbulb"></i></div>
-                            <div><h6>Guitar Lessons</h6><small>⭐ 4.9 · Min-jun</small></div>
+                            <div><h6>{{ __('app.welcome.fc2_title') }}</h6><small>{{ __('app.welcome.fc2_meta') }}</small></div>
                         </div>
-                        <span class="fc-tag" style="background:#d8f0e9;color:#2d8f7f">Beginner welcome</span>
+                        <span class="fc-tag" style="background:#d8f0e9;color:#2d8f7f">{{ __('app.welcome.fc2_tag') }}</span>
                     </div>
 
                     <div class="tg-float-card fc3">
                         <div class="fc-top">
                             <div class="fc-ic" style="background:linear-gradient(135deg,#e0a800,#ffc63d)"><i class="fas fa-language"></i></div>
-                            <div><h6>Korean ↔ English</h6><small>Language swap</small></div>
+                            <div><h6>{{ __('app.welcome.fc3_title') }}</h6><small>{{ __('app.welcome.fc3_meta') }}</small></div>
                         </div>
-                        <span class="fc-tag" style="background:#fff3cd;color:#b8860b">Weekends</span>
+                        <span class="fc-tag" style="background:#fff3cd;color:#b8860b">{{ __('app.welcome.fc3_tag') }}</span>
                     </div>
                 </div>
             </div>
@@ -298,19 +297,19 @@
             <div class="row text-white align-items-center">
                 <div class="col-6 col-md-3 tg-stat-divider">
                     <div class="tg-stat-item"><div class="num" data-count="130"><span class="suf">kg</span></div>
-                        <div class="lbl">Food wasted / person / year</div></div>
+                        <div class="lbl">{{ __('app.welcome.stat1') }}</div></div>
                 </div>
                 <div class="col-6 col-md-3 tg-stat-divider">
                     <div class="tg-stat-item"><div class="num" data-count="68"><span class="suf">%</span></div>
-                        <div class="lbl">Never share their skills</div></div>
+                        <div class="lbl">{{ __('app.welcome.stat2') }}</div></div>
                 </div>
                 <div class="col-6 col-md-3 tg-stat-divider">
                     <div class="tg-stat-item"><div class="num" data-count="100"><span class="suf">%</span></div>
-                        <div class="lbl">Free for everyone</div></div>
+                        <div class="lbl">{{ __('app.welcome.stat3') }}</div></div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="tg-stat-item"><div class="num" data-count="2"><span class="suf">in 1</span></div>
-                        <div class="lbl">Food + Skills, one app</div></div>
+                    <div class="tg-stat-item"><div class="num" data-count="2"><span class="suf">{{ __('app.welcome.stat4_suffix') }}</span></div>
+                        <div class="lbl">{{ __('app.welcome.stat4') }}</div></div>
                 </div>
             </div>
         </div>
@@ -321,29 +320,27 @@
 <section class="tg-section">
     <div class="container">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">Why Togetherly</span>
-            <h2 class="tg-heading">The Problem</h2>
-            <p class="tg-sub">Two major issues silently affect communities every single day.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.problem_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.problem_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.problem_sub') }}</p>
         </div>
         <div class="row g-4">
             <div class="col-md-6 reveal d1">
                 <div class="tg-problem-card">
-                    <span class="tg-pill">Food Waste Crisis</span>
+                    <span class="tg-pill">{{ __('app.welcome.problem1_pill') }}</span>
                     <div class="stat">130 kg</div>
-                    <div class="stat-label">of food wasted per person every year in South Korea</div>
-                    <p class="stat-desc">Restaurants &amp; households discard surplus food daily with no easy
-                        way to share it locally before it goes to waste.</p>
-                    <div class="src">Source: Korea Environment Corp., 2023</div>
+                    <div class="stat-label">{{ __('app.welcome.problem1_label') }}</div>
+                    <p class="stat-desc">{{ __('app.welcome.problem1_desc') }}</p>
+                    <div class="src">{{ __('app.welcome.problem1_src') }}</div>
                 </div>
             </div>
             <div class="col-md-6 reveal d2">
                 <div class="tg-problem-card green">
-                    <span class="tg-pill">Skills Go Unshared</span>
+                    <span class="tg-pill">{{ __('app.welcome.problem2_pill') }}</span>
                     <div class="stat">68%</div>
-                    <div class="stat-label">of people have skills they never teach or share</div>
-                    <p class="stat-desc">Knowledge stays locked inside individuals while others nearby
-                        pay to learn the very same things.</p>
-                    <div class="src">Source: Global Skills Report, 2023</div>
+                    <div class="stat-label">{{ __('app.welcome.problem2_label') }}</div>
+                    <p class="stat-desc">{{ __('app.welcome.problem2_desc') }}</p>
+                    <div class="src">{{ __('app.welcome.problem2_src') }}</div>
                 </div>
             </div>
         </div>
@@ -354,23 +351,22 @@
 <section class="tg-section tg-solution">
     <div class="container">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">The Solution</span>
-            <h2 class="tg-heading">Introducing Togetherly</h2>
-            <p class="tg-sub">One simple app — two powerful features — infinite community impact.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.solution_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.solution_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.solution_sub') }}</p>
         </div>
         <div class="row g-4">
             <div class="col-lg-6 reveal d1">
                 <div class="tg-feature-block">
                     <div class="head food">
                         <i class="fas fa-utensils big"></i>
-                        <h3><i class="fas fa-utensils me-2"></i>Food Sharing</h3>
+                        <h3><i class="fas fa-utensils me-2"></i>{{ __('app.welcome.sol_food_title') }}</h3>
                     </div>
                     <div class="body">
-                        <p class="text-muted">Post surplus food in 30 seconds. Nearby neighbors claim it before
-                            it goes to waste. Simple pickup — no delivery needed.</p>
-                        <div class="tg-step"><span class="n">1</span><span>Post food with a photo &amp; location</span></div>
-                        <div class="tg-step"><span class="n">2</span><span>Neighbors get an instant notification</span></div>
-                        <div class="tg-step"><span class="n">3</span><span>Meet &amp; hand over locally</span></div>
+                        <p class="text-muted">{{ __('app.welcome.sol_food_desc') }}</p>
+                        <div class="tg-step"><span class="n">1</span><span>{{ __('app.welcome.sol_food_s1') }}</span></div>
+                        <div class="tg-step"><span class="n">2</span><span>{{ __('app.welcome.sol_food_s2') }}</span></div>
+                        <div class="tg-step"><span class="n">3</span><span>{{ __('app.welcome.sol_food_s3') }}</span></div>
                     </div>
                 </div>
             </div>
@@ -378,14 +374,13 @@
                 <div class="tg-feature-block">
                     <div class="head skill">
                         <i class="fas fa-lightbulb big"></i>
-                        <h3><i class="fas fa-lightbulb me-2"></i>Skill Sharing</h3>
+                        <h3><i class="fas fa-lightbulb me-2"></i>{{ __('app.welcome.sol_skill_title') }}</h3>
                     </div>
                     <div class="body">
-                        <p class="text-muted">Offer what you know — languages, cooking, music, coding. Locals
-                            book a free session. Skills flow freely through the community.</p>
-                        <div class="tg-step"><span class="n">1</span><span>List your skill &amp; availability</span></div>
-                        <div class="tg-step"><span class="n">2</span><span>Interested people send a request</span></div>
-                        <div class="tg-step"><span class="n">3</span><span>Meet, teach &amp; connect locally</span></div>
+                        <p class="text-muted">{{ __('app.welcome.sol_skill_desc') }}</p>
+                        <div class="tg-step"><span class="n">1</span><span>{{ __('app.welcome.sol_skill_s1') }}</span></div>
+                        <div class="tg-step"><span class="n">2</span><span>{{ __('app.welcome.sol_skill_s2') }}</span></div>
+                        <div class="tg-step"><span class="n">3</span><span>{{ __('app.welcome.sol_skill_s3') }}</span></div>
                     </div>
                 </div>
             </div>
@@ -397,32 +392,32 @@
 <section class="tg-section">
     <div class="container">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">User Journey</span>
-            <h2 class="tg-heading">How It Works</h2>
-            <p class="tg-sub">Three simple steps — from surplus to smiles.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.how_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.how_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.how_sub') }}</p>
         </div>
         <div class="row align-items-start">
             <div class="col-md tg-how-step reveal d1">
                 <div class="tg-how-circle">01</div>
-                <h5>Download &amp; Sign Up</h5>
-                <p class="text-muted">Join with your phone or email. Set your neighborhood. Done in 60 seconds.</p>
+                <h5>{{ __('app.welcome.how1_title') }}</h5>
+                <p class="text-muted">{{ __('app.welcome.how1_desc') }}</p>
             </div>
             <div class="col-md-auto tg-how-arrow reveal d2"><i class="fas fa-arrow-right"></i></div>
             <div class="col-md tg-how-step reveal d2">
                 <div class="tg-how-circle">02</div>
-                <h5>Browse or Post</h5>
-                <p class="text-muted">See what's available nearby — food or skills. Or share your own in 30 seconds.</p>
+                <h5>{{ __('app.welcome.how2_title') }}</h5>
+                <p class="text-muted">{{ __('app.welcome.how2_desc') }}</p>
             </div>
             <div class="col-md-auto tg-how-arrow reveal d3"><i class="fas fa-arrow-right"></i></div>
             <div class="col-md tg-how-step reveal d3">
                 <div class="tg-how-circle">03</div>
-                <h5>Connect &amp; Meet</h5>
-                <p class="text-muted">Message directly in-app. Arrange pickup or a meeting. Build real community bonds.</p>
+                <h5>{{ __('app.welcome.how3_title') }}</h5>
+                <p class="text-muted">{{ __('app.welcome.how3_desc') }}</p>
             </div>
         </div>
         <div class="tg-result-banner reveal d4">
             <i class="fas fa-seedling me-2"></i>
-            Result: Less food wasted. More skills shared. A stronger, warmer community.
+            {{ __('app.welcome.how_result') }}
         </div>
     </div>
 </section>
@@ -431,19 +426,19 @@
 <section class="tg-section tg-solution">
     <div class="container">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">Product Features</span>
-            <h2 class="tg-heading">Key Features</h2>
-            <p class="tg-sub">Simple, focused, and ready to use.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.features_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.features_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.features_sub') }}</p>
         </div>
         <div class="row g-4">
             @php
                 $features = [
-                    ['fa-location-dot', 'Location-Based Feed', "See posts only from your neighborhood. Relevant, timely, local."],
-                    ['fa-bolt', 'Quick Post', "Share food or a skill in under 30 seconds — title, photo, location."],
-                    ['fa-comments', 'In-App Messaging', "Contact the poster directly. No phone number needed. Safe & private."],
-                    ['fa-star', 'Community Ratings', "Rate exchanges after completion. Build trust across the network."],
-                    ['fa-bell', 'Notifications', "Get alerted when food or a skill you want is posted nearby."],
-                    ['fa-heart', 'Free for Everyone', "No paywalls for regular users. Inclusive by design."],
+                    ['fa-location-dot', __('app.welcome.feat1_title'), __('app.welcome.feat1_desc')],
+                    ['fa-bolt', __('app.welcome.feat2_title'), __('app.welcome.feat2_desc')],
+                    ['fa-comments', __('app.welcome.feat3_title'), __('app.welcome.feat3_desc')],
+                    ['fa-star', __('app.welcome.feat4_title'), __('app.welcome.feat4_desc')],
+                    ['fa-bell', __('app.welcome.feat5_title'), __('app.welcome.feat5_desc')],
+                    ['fa-heart', __('app.welcome.feat6_title'), __('app.welcome.feat6_desc')],
                 ];
             @endphp
             @foreach ($features as $i => $f)
@@ -463,19 +458,19 @@
 <section class="tg-section tg-users">
     <div class="container">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">Who We Serve</span>
-            <h2 class="tg-heading">Built for Everyone</h2>
-            <p class="tg-sub">No barriers to entry — Togetherly works for every kind of neighbor.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.users_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.users_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.users_sub') }}</p>
         </div>
         <div class="row g-4">
             @php
                 $users = [
-                    ['fa-house', 'Home Cooks', 'Cook more than they eat and want to reduce food waste.'],
-                    ['fa-store', 'Restaurants', 'Have daily surplus food and want a verified green badge.'],
-                    ['fa-graduation-cap', 'Skill Holders', 'Have knowledge to share and want to give back locally.'],
-                    ['fa-earth-asia', 'Expats & Students', 'New to the city, needing community and learning.'],
-                    ['fa-people-roof', 'Elderly & Families', 'Need affordable food and help, open to local support.'],
-                    ['fa-briefcase', 'Local Businesses', 'CSR goals & brand building with community visibility.'],
+                    ['fa-house', __('app.welcome.user1_title'), __('app.welcome.user1_desc')],
+                    ['fa-store', __('app.welcome.user2_title'), __('app.welcome.user2_desc')],
+                    ['fa-graduation-cap', __('app.welcome.user3_title'), __('app.welcome.user3_desc')],
+                    ['fa-earth-asia', __('app.welcome.user4_title'), __('app.welcome.user4_desc')],
+                    ['fa-people-roof', __('app.welcome.user5_title'), __('app.welcome.user5_desc')],
+                    ['fa-briefcase', __('app.welcome.user6_title'), __('app.welcome.user6_desc')],
                 ];
             @endphp
             @foreach ($users as $i => $u)
@@ -498,17 +493,17 @@
     <span class="tg-blob b2" style="opacity:.25"></span>
     <div class="container" style="position:relative;z-index:2">
         <div class="text-center mb-5 reveal">
-            <span class="tg-eyebrow">Why It Matters</span>
-            <h2 class="tg-heading">Social Impact</h2>
-            <p class="tg-sub">Togetherly creates measurable good — for people and the planet.</p>
+            <span class="tg-eyebrow">{{ __('app.welcome.impact_eyebrow') }}</span>
+            <h2 class="tg-heading">{{ __('app.welcome.impact_title') }}</h2>
+            <p class="tg-sub">{{ __('app.welcome.impact_sub') }}</p>
         </div>
         <div class="row g-4">
             @php
                 $impacts = [
-                    ['fa-recycle','SDG 12 · Responsible Consumption','Environmental','Reduces food waste sent to landfill, lowering methane emissions and carbon footprint city-wide.'],
-                    ['fa-handshake-angle','SDG 11 · Sustainable Communities','Social Cohesion','Fights loneliness and isolation by creating real-world connections between neighbors.'],
-                    ['fa-book-open','SDG 4 · Quality Education','Education Access','Democratizes learning by allowing anyone to teach or learn skills — regardless of income.'],
-                    ['fa-hand-holding-heart','SDG 1 · No Poverty','Economic Relief','Reduces food and education costs for low-income families and students.'],
+                    ['fa-recycle', __('app.welcome.impact1_sdg'), __('app.welcome.impact1_title'), __('app.welcome.impact1_desc')],
+                    ['fa-handshake-angle', __('app.welcome.impact2_sdg'), __('app.welcome.impact2_title'), __('app.welcome.impact2_desc')],
+                    ['fa-book-open', __('app.welcome.impact3_sdg'), __('app.welcome.impact3_title'), __('app.welcome.impact3_desc')],
+                    ['fa-hand-holding-heart', __('app.welcome.impact4_sdg'), __('app.welcome.impact4_title'), __('app.welcome.impact4_desc')],
                 ];
             @endphp
             @foreach ($impacts as $i => $im)
@@ -528,14 +523,14 @@
 {{-- ============ VISION / CTA ============ --}}
 <section class="tg-vision">
     <div class="container reveal">
-        <span class="tg-chip"><span class="dot"></span> Our Vision</span>
-        <h2>A world where nothing goes to waste — not food, not knowledge, not kindness.</h2>
-        <p>Every city has surplus food. Every person has a skill to share. We give communities the tool to help themselves.</p>
+        <span class="tg-chip"><span class="dot"></span> {{ __('app.welcome.vision_chip') }}</span>
+        <h2>{{ __('app.welcome.vision_title') }}</h2>
+        <p>{{ __('app.welcome.vision_desc') }}</p>
         @auth
-            <a href="{{ route('dashboard') }}" class="tg-btn-glow">Go to Your Dashboard</a>
+            <a href="{{ route('dashboard') }}" class="tg-btn-glow">{{ __('app.welcome.vision_cta_dashboard') }}</a>
         @else
-            <a href="{{ route('register') }}" class="tg-btn-glow">Join Togetherly — Free <i class="fas fa-arrow-right ms-2"></i></a>
-            <a href="{{ route('login') }}" class="tg-btn-ghost ms-2">Login</a>
+            <a href="{{ route('register') }}" class="tg-btn-glow">{{ __('app.welcome.vision_cta_join') }} <i class="fas fa-arrow-right ms-2"></i></a>
+            <a href="{{ route('login') }}" class="tg-btn-ghost ms-2">{{ __('app.nav.login') }}</a>
         @endauth
     </div>
 </section>

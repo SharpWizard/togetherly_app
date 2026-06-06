@@ -36,15 +36,15 @@
                 <h1 class="fw-bold mb-1">{{ $user->name }}</h1>
                 <p class="mb-2" style="opacity:.9;">
                     <i class="fas fa-location-dot me-1"></i>{{ $user->profile?->neighborhood ?? 'Busan' }}
-                    @if ($user->profile?->is_verified)<span class="badge bg-light text-success ms-2"><i class="fas fa-circle-check me-1"></i>Verified</span>@endif
+                    @if ($user->profile?->is_verified)<span class="badge bg-light text-success ms-2"><i class="fas fa-circle-check me-1"></i>{{ __('app.profile.verified') }}</span>@endif
                 </p>
                 @if ($user->bio)<p class="mb-0" style="opacity:.85;">{{ $user->bio }}</p>@endif
             </div>
             <div class="text-center">
                 <div class="display-6 fw-bold">⭐ {{ number_format($user->rating, 1) }}</div>
-                <small style="opacity:.85;">{{ $user->total_ratings }} ratings</small>
+                <small style="opacity:.85;">{{ $user->total_ratings }} {{ __('app.profile.ratings') }}</small>
                 @if (Auth::id() !== $user->id)
-                    <div class="mt-2"><a href="{{ route('messages.conversation', $user->id) }}" class="btn btn-light btn-sm fw-semibold"><i class="fas fa-envelope me-1"></i>Message</a></div>
+                    <div class="mt-2"><a href="{{ route('messages.conversation', $user->id) }}" class="btn btn-light btn-sm fw-semibold"><i class="fas fa-envelope me-1"></i>{{ __('app.profile.message') }}</a></div>
                 @endif
             </div>
         </div>
@@ -53,9 +53,9 @@
     <div class="row g-4">
         <div class="col-lg-7">
             {{-- Food --}}
-            <h5 class="section-title mb-3"><i class="fas fa-utensils text-warning me-2"></i>Food Posts ({{ $stats['food'] }})</h5>
+            <h5 class="section-title mb-3"><i class="fas fa-utensils text-warning me-2"></i>{{ __('app.profile.food_posts') }} ({{ $stats['food'] }})</h5>
             @if ($foodPosts->isEmpty())
-                <p class="text-muted">No active food posts.</p>
+                <p class="text-muted">{{ __('app.profile.no_food') }}</p>
             @else
                 <div class="row g-3 mb-4">
                     @foreach ($foodPosts as $post)
@@ -68,7 +68,7 @@
                                         <div class="tg-card-img-ph" style="background:linear-gradient(135deg,#ff8c42,#ff6f5e)"><i class="fas fa-utensils"></i></div>
                                     @endif
                                     <div class="p-3"><h6 class="fw-bold mb-0 text-dark">{{ $post->title }}</h6>
-                                        <small class="text-muted">{{ $post->food_type }}</small></div>
+                                        <small class="text-muted">{{ __('app.food_types.'.$post->food_type) }}</small></div>
                                 </div>
                             </a>
                         </div>
@@ -77,9 +77,9 @@
             @endif
 
             {{-- Skills --}}
-            <h5 class="section-title mb-3"><i class="fas fa-lightbulb text-success me-2"></i>Skills ({{ $stats['skills'] }})</h5>
+            <h5 class="section-title mb-3"><i class="fas fa-lightbulb text-success me-2"></i>{{ __('app.profile.skills') }} ({{ $stats['skills'] }})</h5>
             @if ($skillPosts->isEmpty())
-                <p class="text-muted">No active skills.</p>
+                <p class="text-muted">{{ __('app.profile.no_skills') }}</p>
             @else
                 <div class="row g-3">
                     @foreach ($skillPosts as $post)
@@ -88,7 +88,7 @@
                                 <div class="tg-card-post">
                                     <div class="tg-card-img-ph" style="background:linear-gradient(135deg,#2d8f7f,#45b4a1)"><i class="fas fa-lightbulb"></i></div>
                                     <div class="p-3"><h6 class="fw-bold mb-0 text-dark">{{ $post->title }}</h6>
-                                        <small class="text-muted">{{ $post->category }} · {{ $post->skill_level }}</small></div>
+                                        <small class="text-muted">{{ __('app.skill_categories.'.$post->category) }} · {{ __('app.skill_levels.'.$post->skill_level) }}</small></div>
                                 </div>
                             </a>
                         </div>
@@ -99,14 +99,14 @@
 
         {{-- Reviews --}}
         <div class="col-lg-5">
-            <h5 class="section-title mb-3"><i class="fas fa-star text-warning me-2"></i>Reviews</h5>
+            <h5 class="section-title mb-3"><i class="fas fa-star text-warning me-2"></i>{{ __('app.profile.reviews') }}</h5>
             @forelse ($reviews as $review)
                 <div class="tg-review">
                     <div class="d-flex gap-3">
                         <div class="tg-review-avatar">{{ strtoupper(substr($review->rater->name ?? '?',0,1)) }}</div>
                         <div>
                             <div class="d-flex align-items-center gap-2">
-                                <strong>{{ $review->rater->name ?? 'User' }}</strong>
+                                <strong>{{ $review->rater->name ?? __('app.profile.user') }}</strong>
                                 <span class="text-warning">{{ str_repeat('★', $review->rating) }}<span class="text-muted">{{ str_repeat('★', 5 - $review->rating) }}</span></span>
                             </div>
                             <p class="mb-1 text-muted small">{{ $review->comment }}</p>
@@ -115,7 +115,7 @@
                     </div>
                 </div>
             @empty
-                <p class="text-muted">No written reviews yet.</p>
+                <p class="text-muted">{{ __('app.profile.no_reviews') }}</p>
             @endforelse
         </div>
     </div>

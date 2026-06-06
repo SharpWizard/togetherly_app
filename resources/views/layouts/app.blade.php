@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,7 +149,7 @@
                     <form class="d-flex mx-lg-3 my-2 my-lg-0 flex-grow-1" style="max-width:380px;" action="{{ route('search') }}" method="GET">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="search" name="q" class="form-control border-start-0" placeholder="Search food, skills, people…" value="{{ request('q') }}" style="border-radius:0 30px 30px 0;">
+                            <input type="search" name="q" class="form-control border-start-0" placeholder="{{ __('app.nav.search_placeholder') }}" value="{{ request('q') }}" style="border-radius:0 30px 30px 0;">
                         </div>
                     </form>
                 @endauth
@@ -157,32 +157,32 @@
                     @auth
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                                <i class="fas fa-gauge-high me-1"></i> Dashboard
+                                <i class="fas fa-gauge-high me-1"></i> {{ __('app.nav.dashboard') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('food.*') ? 'active' : '' }}" href="{{ route('food.index') }}">
-                                <i class="fas fa-utensils me-1"></i> Food
+                                <i class="fas fa-utensils me-1"></i> {{ __('app.nav.food') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('skills.*') ? 'active' : '' }}" href="{{ route('skills.index') }}">
-                                <i class="fas fa-lightbulb me-1"></i> Skills
+                                <i class="fas fa-lightbulb me-1"></i> {{ __('app.nav.skills') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('favorites.*') ? 'active' : '' }}" href="{{ route('favorites.index') }}">
-                                <i class="fas fa-bookmark me-1"></i> Saved
+                                <i class="fas fa-bookmark me-1"></i> {{ __('app.nav.saved') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('impact') ? 'active' : '' }}" href="{{ route('impact') }}">
-                                <i class="fas fa-earth-asia me-1"></i> Impact
+                                <i class="fas fa-earth-asia me-1"></i> {{ __('app.nav.impact') }}
                             </a>
                         </li>
                         <li class="nav-item position-relative">
                             <a class="nav-link {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.inbox') }}">
-                                <i class="fas fa-envelope me-1"></i> Messages
+                                <i class="fas fa-envelope me-1"></i> {{ __('app.nav.messages') }}
                                 @php $unread = \App\Models\Message::where('recipient_id', Auth::id())->where('is_read', false)->count(); @endphp
                                 @if ($unread > 0)<span class="tg-nav-badge">{{ $unread }}</span>@endif
                             </a>
@@ -195,8 +195,8 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px; width:340px; max-height:420px; overflow-y:auto;">
                                 <li class="d-flex justify-content-between align-items-center px-3 py-2">
-                                    <strong>Notifications</strong>
-                                    <a href="{{ route('notifications.index') }}" class="small text-decoration-none" style="color:var(--tg-green)">View all</a>
+                                    <strong>{{ __('app.nav.notifications') }}</strong>
+                                    <a href="{{ route('notifications.index') }}" class="small text-decoration-none" style="color:var(--tg-green)">{{ __('app.nav.view_all') }}</a>
                                 </li>
                                 <li><hr class="dropdown-divider my-1"></li>
                                 @php $recentNotes = \App\Models\Notification::where('user_id', Auth::id())->latest()->limit(6)->get(); @endphp
@@ -214,7 +214,7 @@
                                         </form>
                                     </li>
                                 @empty
-                                    <li class="text-center text-muted py-3"><small>No notifications yet</small></li>
+                                    <li class="text-center text-muted py-3"><small>{{ __('app.nav.no_notifications') }}</small></li>
                                 @endforelse
                             </ul>
                         </li>
@@ -232,27 +232,47 @@
                                     <small class="text-muted">⭐ {{ number_format(Auth::user()->rating, 1) }} · {{ Auth::user()->profile?->neighborhood }}</small>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()) }}"><i class="fas fa-user me-2 text-muted"></i>My Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-pen me-2 text-muted"></i>Edit Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-gauge-high me-2 text-muted"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()) }}"><i class="fas fa-user me-2 text-muted"></i>{{ __('app.nav.my_profile') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-pen me-2 text-muted"></i>{{ __('app.nav.edit_profile') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-gauge-high me-2 text-muted"></i>{{ __('app.nav.dashboard') }}</a></li>
                                 @if (Auth::user()->is_admin)
-                                    <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fas fa-shield-halved me-2 text-muted"></i>Admin Panel</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fas fa-shield-halved me-2 text-muted"></i>{{ __('app.nav.admin_panel') }}</a></li>
                                 @endif
-                                <li><a class="dropdown-item" href="{{ route('claims.index') }}"><i class="fas fa-hand-holding-heart me-2 text-muted"></i>My Claims</a></li>
-                                <li><a class="dropdown-item" href="{{ route('bookings.index') }}"><i class="fas fa-calendar-check me-2 text-muted"></i>My Bookings</a></li>
+                                <li><a class="dropdown-item" href="{{ route('claims.index') }}"><i class="fas fa-hand-holding-heart me-2 text-muted"></i>{{ __('app.nav.my_claims') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('bookings.index') }}"><i class="fas fa-calendar-check me-2 text-muted"></i>{{ __('app.nav.my_bookings') }}</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf
-                                        <button class="dropdown-item text-danger" type="submit"><i class="fas fa-right-from-bracket me-2"></i>Logout</button>
+                                        <button class="dropdown-item text-danger" type="submit"><i class="fas fa-right-from-bracket me-2"></i>{{ __('app.nav.logout') }}</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     @else
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                        <li class="nav-item ms-lg-2"><a class="tg-btn-pill" href="{{ route('register') }}">Get Started</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">{{ __('app.nav.login') }}</a></li>
+                        <li class="nav-item ms-lg-2"><a class="tg-btn-pill" href="{{ route('register') }}">{{ __('app.nav.get_started') }}</a></li>
                     @endauth
+
+                    {{-- Language switcher (English / 한국어) --}}
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe me-1"></i> {{ app()->getLocale() === 'ko' ? '한국어' : 'EN' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px;">
+                            <li class="px-3 py-1"><small class="text-muted">{{ __('app.language') }}</small></li>
+                            <li>
+                                <a class="dropdown-item d-flex justify-content-between align-items-center {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">
+                                    {{ __('app.lang_en') }} @if(app()->getLocale() === 'en')<i class="fas fa-check"></i>@endif
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex justify-content-between align-items-center {{ app()->getLocale() === 'ko' ? 'active' : '' }}" href="{{ route('locale.switch', 'ko') }}">
+                                    {{ __('app.lang_ko') }} @if(app()->getLocale() === 'ko')<i class="fas fa-check"></i>@endif
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -277,8 +297,8 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <div class="brand"><span class="tg-logo-mark">T</span> Togetherly</div>
-                    <p class="small" style="max-width:300px;">Share Food. Share Skills. Build Community. A world where nothing goes to waste — not food, not knowledge, not kindness.</p>
+                    <div class="brand"><span class="tg-logo-mark">T</span> {{ __('app.brand') }}</div>
+                    <p class="small" style="max-width:300px;">{{ __('app.footer.about') }}</p>
                     <div class="social mt-3">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -287,36 +307,36 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <h6>Explore</h6>
+                    <h6>{{ __('app.footer.explore') }}</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ route('welcome') }}">Home</a></li>
+                        <li class="mb-2"><a href="{{ route('welcome') }}">{{ __('app.footer.home') }}</a></li>
                         @auth
-                            <li class="mb-2"><a href="{{ route('food.index') }}">Food</a></li>
-                            <li class="mb-2"><a href="{{ route('skills.index') }}">Skills</a></li>
+                            <li class="mb-2"><a href="{{ route('food.index') }}">{{ __('app.nav.food') }}</a></li>
+                            <li class="mb-2"><a href="{{ route('skills.index') }}">{{ __('app.nav.skills') }}</a></li>
                         @else
-                            <li class="mb-2"><a href="{{ route('register') }}">Get Started</a></li>
-                            <li class="mb-2"><a href="{{ route('login') }}">Login</a></li>
+                            <li class="mb-2"><a href="{{ route('register') }}">{{ __('app.nav.get_started') }}</a></li>
+                            <li class="mb-2"><a href="{{ route('login') }}">{{ __('app.nav.login') }}</a></li>
                         @endauth
                     </ul>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <h6>Impact</h6>
+                    <h6>{{ __('app.footer.impact') }}</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#">SDG 12 · Waste</a></li>
-                        <li class="mb-2"><a href="#">SDG 11 · Community</a></li>
-                        <li class="mb-2"><a href="#">SDG 4 · Education</a></li>
-                        <li class="mb-2"><a href="#">SDG 1 · Poverty</a></li>
+                        <li class="mb-2"><a href="#">{{ __('app.footer.sdg_waste') }}</a></li>
+                        <li class="mb-2"><a href="#">{{ __('app.footer.sdg_community') }}</a></li>
+                        <li class="mb-2"><a href="#">{{ __('app.footer.sdg_education') }}</a></li>
+                        <li class="mb-2"><a href="#">{{ __('app.footer.sdg_poverty') }}</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
-                    <h6>Get in touch</h6>
+                    <h6>{{ __('app.footer.get_in_touch') }}</h6>
                     <p class="small mb-1"><i class="fas fa-envelope me-2"></i>busan@togetherly.app</p>
                     <p class="small mb-1"><i class="fas fa-globe me-2"></i>togetherly.app</p>
-                    <p class="small"><i class="fas fa-location-dot me-2"></i>Busan, South Korea</p>
+                    <p class="small"><i class="fas fa-location-dot me-2"></i>{{ __('app.footer.location') }}</p>
                 </div>
             </div>
             <div class="bottom text-center">
-                &copy; {{ date('Y') }} Togetherly · Kyungsung University · Built with &hearts; for community.
+                &copy; {{ date('Y') }} {{ __('app.brand') }} · {{ __('app.university') }} · {{ __('app.footer.rights') }}
             </div>
         </div>
     </footer>
