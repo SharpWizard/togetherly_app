@@ -299,12 +299,6 @@
                 <div class="col-lg-4">
                     <div class="brand"><span class="tg-logo-mark">T</span> {{ __('app.brand') }}</div>
                     <p class="small" style="max-width:300px;">{{ __('app.footer.about') }}</p>
-                    <div class="social mt-3">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-x-twitter"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
                 </div>
                 <div class="col-6 col-lg-2">
                     <h6>{{ __('app.footer.explore') }}</h6>
@@ -327,12 +321,6 @@
                         <li class="mb-2"><a href="#">{{ __('app.footer.sdg_education') }}</a></li>
                         <li class="mb-2"><a href="#">{{ __('app.footer.sdg_poverty') }}</a></li>
                     </ul>
-                </div>
-                <div class="col-lg-4">
-                    <h6>{{ __('app.footer.get_in_touch') }}</h6>
-                    <p class="small mb-1"><i class="fas fa-envelope me-2"></i>busan@togetherly.app</p>
-                    <p class="small mb-1"><i class="fas fa-globe me-2"></i>togetherly.app</p>
-                    <p class="small"><i class="fas fa-location-dot me-2"></i>{{ __('app.footer.location') }}</p>
                 </div>
             </div>
             <div class="bottom text-center">
