@@ -22,6 +22,16 @@
             --tg-orange: #ff8c42;
             --tg-coral: #ff6f5e;
             --tg-cream: #f4f8f4;
+
+            /* Remap Bootstrap's blue "primary" + link colors to the green theme
+               so every default-blue element (links, .text-primary, checkboxes,
+               tabs, spinners, progress bars) matches the palette. */
+            --bs-primary: #2d8f7f;
+            --bs-primary-rgb: 45, 143, 127;
+            --bs-link-color: #2d8f7f;
+            --bs-link-color-rgb: 45, 143, 127;
+            --bs-link-hover-color: #20695c;
+            --bs-link-hover-color-rgb: 32, 105, 92;
         }
 
         body {
@@ -179,6 +189,24 @@
         .pagination .page-link:focus {
             box-shadow: 0 0 0 .2rem rgba(69,180,161,.25); border-color: var(--tg-light);
         }
+
+        /* ===== THEME OVERRIDES for remaining default-blue Bootstrap bits ===== */
+        a { color: var(--tg-green); }
+        a:hover { color: #20695c; }
+        .text-primary { color: var(--tg-green) !important; }
+        .link-primary { color: var(--tg-green) !important; }
+        .btn-info { background: var(--tg-light); border-color: var(--tg-light); color: #fff; }
+        .btn-info:hover { background: var(--tg-green); border-color: var(--tg-green); color: #fff; }
+        .form-check-input:checked { background-color: var(--tg-green); border-color: var(--tg-green); }
+        .form-check-input:focus { border-color: var(--tg-light); box-shadow: 0 0 0 .25rem rgba(69,180,161,.25); }
+        .nav-pills .nav-link.active, .nav-pills .show > .nav-link { background-color: var(--tg-green); }
+        .nav-tabs .nav-link.active { color: var(--tg-green); border-bottom-color: var(--tg-green); }
+        .spinner-border.text-primary, .spinner-grow.text-primary { color: var(--tg-green) !important; }
+        .progress-bar { background-color: var(--tg-green); }
+        .list-group-item.active { background-color: var(--tg-green); border-color: var(--tg-green); }
+        /* Keep footer + navbar links on their own colors (set explicitly elsewhere) */
+        .tg-footer a { color: rgba(255,255,255,.7); }
+        .tg-footer a:hover { color: var(--tg-mint); }
 
         /* ===== FOOTER ===== */
         .tg-footer {
