@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Hash;
  * Fills the community with realistic South Korea–based members, food posts
  * and skill posts (all with images) so the site looks lively. Idempotent:
  * safe to run multiple times (firstOrCreate on email / title+user).
+ *
+ * Also purges any legacy image-less posts so the feed shows only
+ * rich, image-backed listings.
  */
 class KoreaSeeder extends Seeder
 {
@@ -68,6 +71,20 @@ class KoreaSeeder extends Seeder
             ['Handmade Mandu Dumplings', 'Pork & kimchi dumplings, frozen and ready to steam.', 'cooked', 20, 'dumpling'],
             ['Garden Salad Boxes', 'Crisp mixed greens with a side of dressing. Made fresh.', 'raw', 5, 'salad'],
             ['Farm-Fresh Eggs', 'A neighbour gave us two trays — sharing one tray of 15.', 'raw', 15, 'eggs'],
+            ['Wood-Fired Pizza Slices', 'Leftover from a pizza night — margherita & pepperoni. Still hot.', 'cooked', 8, 'pizza'],
+            ['Club Sandwiches', 'Catering surplus from an office lunch. Wrapped and fresh.', 'cooked', 6, 'sandwich'],
+            ['Korean Fried Chicken', 'Made a double batch of yangnyeom chicken — crispy and saucy!', 'cooked', 10, 'friedchicken'],
+            ['Kimchi Jjigae (Stew)', 'A big warming pot of kimchi stew. Bring a container along.', 'cooked', 5, 'stew'],
+            ['Warm Rice Porridge', 'Gentle juk, perfect if someone is feeling under the weather.', 'cooked', 4, 'porridge'],
+            ['Savory Pajeon Pancakes', 'Green-onion & seafood pancakes, freshly pan-fried.', 'cooked', 6, 'pancake'],
+            ['Fresh Seafood Platter', 'Extra from the fish market — shrimp, squid and clams on ice.', 'raw', 4, 'seafood'],
+            ['Soft Tofu Sundubu', 'Silky soft-tofu stew base, mild and comforting.', 'cooked', 5, 'tofu'],
+            ['Assorted Banchan Sides', 'Six little side dishes — namul, pickles and more.', 'cooked', 8, 'banchan'],
+            ['Homemade Kimbap Rolls', 'Veggie & egg kimbap, sliced and ready. Great for a picnic.', 'cooked', 12, 'kimbap'],
+            ['Fresh Fruit Smoothies', 'Made too many strawberry-banana smoothies. Chilled and ready.', 'drinks', 6, 'smoothie'],
+            ['Greek Yogurt Cups', 'Plain & honey yogurt cups, a few days before best-by.', 'desserts', 9, 'yogurt'],
+            ['Local Wildflower Honey', 'A jar of raw honey from a friend\'s rooftop hives.', 'other', 5, 'honey'],
+            ['Homemade Strawberry Jam', 'Small-batch jam from this season\'s strawberries.', 'other', 7, 'jam'],
         ];
         foreach ($foods as $i => $f) {
             $owner = $users[$i % count($users)];
@@ -76,7 +93,7 @@ class KoreaSeeder extends Seeder
                 ['description' => $f[1], 'food_type' => $f[2], 'quantity' => $f[3],
                  'image' => 'food/'.$f[4].'.jpg', 'status' => 'available',
                  'neighborhood' => $owner['hood'], 'latitude' => $owner['lat'], 'longitude' => $owner['lng'],
-                 'expires_at' => now()->addDays(2 + ($i % 6)), 'views' => rand(5, 140)]
+                 'expires_at' => now()->addDays(2 + ($i % 7)), 'views' => rand(5, 140)]
             );
         }
 
@@ -96,6 +113,18 @@ class KoreaSeeder extends Seeder
             ['Piano for Kids & Adults', 'Read music and play your favourite tunes. Beginner to intermediate.', 'music', 'intermediate', 'Flexible', 'piano'],
             ['Knitting & Crochet Circle', 'Cozy weekly meetup. Bring yarn, leave with new skills and friends.', 'other', 'beginner', 'Wednesday 2 PM', 'knitting'],
             ['Urban Gardening Tips', 'Grow herbs and veg on a balcony. Composting and container tips.', 'other', 'beginner', 'Weekends', 'gardening'],
+            ['Pottery & Ceramics Workshop', 'Hand-build a bowl or mug on the wheel. Clay and firing included.', 'art', 'beginner', 'Sundays 1 PM', 'pottery'],
+            ['Sewing & Alterations', 'Hem trousers, fix zips, make a tote bag. Bring your machine or use mine.', 'other', 'beginner', 'Tuesdays 4 PM', 'sewing'],
+            ['Chess Club for All Levels', 'Friendly games and tactics coaching. Boards provided.', 'other', 'intermediate', 'Friday evenings', 'chess'],
+            ['Learn to Swim', 'Water confidence and basic strokes for nervous beginners.', 'fitness', 'beginner', 'Weekend mornings', 'swimming'],
+            ['Makeup & Self-Care Basics', 'Everyday looks and skincare routines. Hands-on practice.', 'art', 'beginner', 'Flexible', 'makeup'],
+            ['Drum Lessons', 'Find your rhythm on the kit — rudiments to first beats.', 'music', 'beginner', 'Wednesday 6 PM', 'drums'],
+            ['Violin for Beginners', 'Posture, bowing and your first melodies. Loaner violins available.', 'music', 'beginner', 'Saturday 10 AM', 'violin'],
+            ['Baking & Pastry Class', 'Master cookies, scones and a simple tart. Take your bakes home.', 'cooking', 'intermediate', 'Sundays 2 PM', 'baking'],
+            ['Archery Introduction', 'Safety, stance and your first arrows at the range.', 'fitness', 'beginner', 'Weekends', 'archery'],
+            ['Guided Meditation', 'Wind down with breathwork and mindfulness. All welcome.', 'fitness', 'beginner', 'Daily 8 PM', 'meditation'],
+            ['Latte Art Barista Basics', 'Espresso, steaming milk and pouring your first heart.', 'cooking', 'beginner', 'Mon/Thu 3 PM', 'latteart'],
+            ['Neighborhood Hiking Group', 'Easy weekend trails around the city. Fresh air and good company.', 'fitness', 'beginner', 'Saturday 7 AM', 'hiking'],
         ];
         foreach ($skills as $i => $s) {
             $owner = $users[($i + 3) % count($users)];
@@ -108,6 +137,11 @@ class KoreaSeeder extends Seeder
             );
         }
 
-        $this->command->info('Korea seed complete: '.count($users).' members, '.count($foods).' food posts, '.count($skills).' skill posts.');
+        // Purge legacy / image-less posts so the feed shows only image-backed
+        // listings. SoftDeletes + cascade FKs make this safe.
+        $deletedFood = FoodPost::where(fn ($q) => $q->whereNull('image')->orWhere('image', ''))->forceDelete();
+        $deletedSkill = SkillPost::where(fn ($q) => $q->whereNull('image')->orWhere('image', ''))->forceDelete();
+
+        $this->command->info('Korea seed complete: '.count($users).' members, '.count($foods).' food, '.count($skills).' skill posts. Purged '.$deletedFood.' food / '.$deletedSkill.' skill image-less posts.');
     }
 }

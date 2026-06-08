@@ -50,37 +50,8 @@ class DemoSeeder extends Seeder
             $users[] = $u;
         }
 
-        // Food posts
-        $foods = [
-            ['Homemade Kimchi', 'Fresh batch, made too much for our family. 3 jars to share!', 'cooked', 3],
-            ['Fresh Bakery Bread', 'End-of-day surplus from our cafe — sourdough & baguettes.', 'bakery', 8],
-            ['Organic Vegetables', 'Extra veggies from my balcony garden — tomatoes, lettuce, herbs.', 'raw', 5],
-            ['Leftover Catering Food', 'Office event leftovers — sandwiches & fruit platters. Still fresh!', 'leftovers', 12],
-        ];
-        foreach ($foods as $i => $f) {
-            FoodPost::firstOrCreate(
-                ['title' => $f[0], 'user_id' => $users[$i % count($users)]->id],
-                ['description' => $f[1], 'food_type' => $f[2], 'quantity' => $f[3],
-                 'status' => 'available', 'neighborhood' => $hood, 'latitude' => 35.16, 'longitude' => 129.16,
-                 'expires_at' => now()->addDays(2 + $i)]
-            );
-        }
-
-        // Skill posts
-        $skills = [
-            ['Guitar Lessons for Beginners', 'Learn your first songs! Acoustic guitar, patient teaching.', 'music', 'intermediate', 'Weekends 2-5 PM'],
-            ['Korean ↔ English Exchange', 'Native Korean speaker, fluent English. Let\'s practice together!', 'languages', 'beginner', 'Tue & Thu evenings'],
-            ['Home Cooking Basics', 'Learn to cook 5 simple Korean dishes from scratch.', 'cooking', 'beginner', 'Flexible'],
-            ['Intro to Web Coding', 'HTML, CSS & basic JavaScript for total beginners.', 'coding', 'advanced', 'Mon/Wed 7 PM'],
-        ];
-        foreach ($skills as $i => $s) {
-            SkillPost::firstOrCreate(
-                ['title' => $s[0], 'user_id' => $users[$i % count($users)]->id],
-                ['description' => $s[1], 'category' => $s[2], 'skill_level' => $s[3],
-                 'available_times' => $s[4], 'status' => 'active',
-                 'neighborhood' => $hood, 'latitude' => 35.16, 'longitude' => 129.16]
-            );
-        }
+        // NOTE: Demo food/skill posts were removed — all post content is now
+        // seeded (with images) by KoreaSeeder, and image-less posts are purged.
 
         // A welcome message to the demo user
         Message::firstOrCreate(
