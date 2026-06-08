@@ -21,19 +21,21 @@
             <h1 class="fw-bold mb-1"><i class="fas fa-shield-halved me-2"></i>{{ __('app.admin.dashboard_title') }}</h1>
             <p class="mb-0" style="opacity:.85;">{{ __('app.admin.dashboard_subtitle') }}</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('admin.users') }}" class="btn btn-light fw-semibold"><i class="fas fa-users me-1"></i>Manage Users</a>
+            <a href="{{ route('admin.food-posts') }}" class="btn btn-light fw-semibold"><i class="fas fa-utensils me-1"></i>Food Posts</a>
+            <a href="{{ route('admin.skill-posts') }}" class="btn btn-light fw-semibold"><i class="fas fa-lightbulb me-1"></i>Skills</a>
             <a href="{{ route('admin.reports') }}" class="btn btn-light fw-semibold position-relative">
                 <i class="fas fa-flag me-1"></i>{{ __('app.admin.reports') }}
                 @if ($stats['reports'] > 0)<span class="badge bg-danger rounded-pill ms-1">{{ $stats['reports'] }}</span>@endif
             </a>
-            <a href="{{ route('admin.users') }}" class="btn btn-light fw-semibold"><i class="fas fa-users me-1"></i>{{ __('app.admin.manage_users') }}</a>
         </div>
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['users'] }}</div><div class="l">{{ __('app.admin.members') }}</div></div></div>
-        <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v text-warning">{{ $stats['food'] }}</div><div class="l">{{ __('app.admin.food_posts') }}</div></div></div>
-        <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v" style="color:var(--tg-green)">{{ $stats['skills'] }}</div><div class="l">{{ __('app.admin.skills') }}</div></div></div>
+        <div class="col-6 col-lg-3"><a href="{{ route('admin.users') }}" class="text-decoration-none"><div class="tg-stat"><div class="v">{{ $stats['users'] }}</div><div class="l">{{ __('app.admin.members') }}</div></div></a></div>
+        <div class="col-6 col-lg-3"><a href="{{ route('admin.food-posts') }}" class="text-decoration-none"><div class="tg-stat"><div class="v text-warning">{{ $stats['food'] }}</div><div class="l">{{ __('app.admin.food_posts') }}</div></div></a></div>
+        <div class="col-6 col-lg-3"><a href="{{ route('admin.skill-posts') }}" class="text-decoration-none"><div class="tg-stat"><div class="v" style="color:var(--tg-green)">{{ $stats['skills'] }}</div><div class="l">{{ __('app.admin.skills') }}</div></div></a></div>
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['verified'] }}</div><div class="l">{{ __('app.admin.verified') }}</div></div></div>
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['claims'] }}</div><div class="l">{{ __('app.admin.claims') }}</div></div></div>
         <div class="col-6 col-lg-3"><div class="tg-stat"><div class="v">{{ $stats['bookings'] }}</div><div class="l">{{ __('app.admin.bookings') }}</div></div></div>

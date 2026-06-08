@@ -52,4 +52,9 @@ class SkillPost extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function postImages()
+    {
+        return $this->morphMany(PostImage::class, 'imageable')->orderBy('order');
+    }
 }

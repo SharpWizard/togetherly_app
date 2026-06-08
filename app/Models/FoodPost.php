@@ -52,4 +52,9 @@ class FoodPost extends Model
     {
         return $this->hasMany(Claim::class);
     }
+
+    public function postImages()
+    {
+        return $this->morphMany(PostImage::class, 'imageable')->orderBy('order');
+    }
 }

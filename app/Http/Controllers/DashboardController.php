@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('welcome');
     }
 
     public function index()
@@ -46,5 +46,23 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard', compact('recentFoodPosts', 'recentSkillPosts', 'myFoodPosts', 'mySkillPosts'));
+    }
+
+    public function welcome()
+    {
+        $recentFoodPosts = FoodPost::where('status', 'available')
+            ->where('expires_at', '>', now())
+            ->with('user')
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        $recentSkillPosts = SkillPost::where('status', 'active')
+            ->with('user')
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        return view('welcome', compact('recentFoodPosts', 'recentSkillPosts'));
     }
 }

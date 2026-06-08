@@ -11,7 +11,7 @@ class FoodPostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('publicShow');
     }
 
     public function index(Request $request)
@@ -24,6 +24,7 @@ class FoodPostController extends Controller
             ->where('expires_at', '>', now())
             ->with('user');
 
+        // Search
         if ($search = $request->input('q')) {
             $query->where(function ($w) use ($search) {
                 $w->where('title', 'like', "%{$search}%")
@@ -31,16 +32,31 @@ class FoodPostController extends Controller
             });
         }
 
+        // Filter by food type
         if ($type = $request->input('type')) {
             $query->where('food_type', $type);
         }
 
-        $sort = $request->input('sort', 'latest');
-        if ($sort === 'expiring') {
-            $query->orderBy('expires_at', 'asc');
-        } else {
-            $query->latest();
+        // Filter by user rating
+        if ($minRating = $request->input('rating')) {
+            $query->whereHas('user', function ($q) use ($minRating) {
+                $q->where('rating', '>=', $minRating);
+            });
         }
+
+        // Filter by expiring soon
+        if ($request->input('expiring') === 'soon') {
+            $query->whereBetween('expires_at', [now(), now()->addHours(24)]);
+        }
+
+        // Sorting
+        $sort = $request->input('sort', 'latest');
+        match($sort) {
+            'expiring' => $query->orderBy('expires_at', 'asc'),
+            'popular' => $query->orderBy('views', 'desc'),
+            'oldest' => $query->oldest(),
+            default => $query->latest(),
+        };
 
         $foodPosts = $query->paginate(12)->withQueryString();
 
@@ -86,7 +102,8 @@ class FoodPostController extends Controller
         if ($foodPost->user_id !== Auth::id()) {
             $foodPost->increment('views');
         }
-        return view('food.show', compact('foodPost'));
+        $recommendations = $this->getRecommendations($foodPost);
+        return view('food.show', compact('foodPost', 'recommendations'));
     }
 
     public function edit(FoodPost $foodPost)
@@ -140,5 +157,23 @@ class FoodPostController extends Controller
         $foodPost->delete();
 
         return redirect()->route('food.index')->with('success', 'Food post deleted!');
+    }
+
+    public function publicShow(FoodPost $foodPost)
+    {
+        $foodPost->increment('views');
+        return view('food.public-show', compact('foodPost'));
+    }
+
+    private function getRecommendations(FoodPost $foodPost, $limit = 4)
+    {
+        return FoodPost::where('food_type', $foodPost->food_type)
+            ->where('id', '!=', $foodPost->id)
+            ->where('status', 'available')
+            ->where('expires_at', '>', now())
+            ->with('user')
+            ->latest()
+            ->limit($limit)
+            ->get();
     }
 }

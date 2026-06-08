@@ -23,6 +23,7 @@ class User extends Authenticatable
         'rating',
         'total_ratings',
         'is_admin',
+        'is_suspended',
     ];
 
     protected $appends = ['initial'];

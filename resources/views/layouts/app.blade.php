@@ -32,39 +32,63 @@
 
         /* ===== NAVBAR ===== */
         .tg-navbar {
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(0,0,0,0.05);
             box-shadow: 0 2px 20px rgba(0,0,0,0.04);
             padding: 12px 0;
         }
+        .tg-navbar .container {
+            display: flex; align-items: center; justify-content: space-between;
+        }
         .tg-navbar .navbar-brand {
-            font-weight: 800; font-size: 1.35rem; color: var(--tg-dark) !important;
-            display: flex; align-items: center; gap: 10px;
+            font-weight: 800; font-size: 1.25rem; color: var(--tg-dark) !important;
+            display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+            margin: 0;
         }
         .tg-logo-mark {
-            width: 38px; height: 38px; border-radius: 11px;
+            width: 36px; height: 36px; border-radius: 10px;
             background: linear-gradient(135deg, var(--tg-green), var(--tg-light));
             display: inline-flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: 800; font-size: 1.2rem;
+            color: #fff; font-weight: 800; font-size: 1.1rem;
             box-shadow: 0 6px 16px rgba(45,143,127,0.35);
         }
-        .tg-navbar .nav-link {
-            color: #4a5a55 !important; font-weight: 600; font-size: .95rem;
-            padding: 8px 14px !important; border-radius: 10px; transition: all .2s;
+        .tg-nav-center {
+            display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1;
+            margin: 0 30px;
         }
-        .tg-navbar .nav-link:hover { color: var(--tg-green) !important; background: #eaf5f1; }
-        .tg-navbar .nav-link.active { color: var(--tg-green) !important; background: #eaf5f1; }
+        .tg-navbar .nav-link {
+            color: #5a6b66 !important; font-weight: 500; font-size: .85rem;
+            padding: 6px 10px !important; border-radius: 6px; transition: all .2s;
+            white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .tg-navbar .nav-link i {
+            font-size: 0.95rem;
+        }
+        .tg-navbar .nav-link:hover { color: var(--tg-green) !important; background: rgba(45,143,127,0.08); }
+        .tg-navbar .nav-link.active { color: var(--tg-green) !important; background: rgba(45,143,127,0.12); font-weight: 600; }
+        .tg-nav-divider { width: 1px; height: 20px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+        .tg-nav-right {
+            display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+        }
+        .tg-search-compact {
+            display: none;
+        }
+        @media (max-width: 1200px) {
+            .tg-nav-center { margin: 0 15px; gap: 0px; }
+            .tg-navbar .nav-link { padding: 5px 8px !important; font-size: .8rem; }
+            .tg-nav-divider { margin: 0 6px; }
+        }
         .tg-nav-badge {
-            position: absolute; top: 2px; right: 6px; background: var(--tg-coral);
-            color: #fff; font-size: .62rem; font-weight: 700; border-radius: 10px;
-            padding: 1px 6px; line-height: 1.4;
+            position: absolute; top: -3px; right: -3px; background: var(--tg-coral);
+            color: #fff; font-size: .55rem; font-weight: 700; border-radius: 8px;
+            padding: 2px 4px; line-height: 1; min-width: 16px; text-align: center;
         }
         .tg-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 36px; height: 36px; border-radius: 50%;
             background: linear-gradient(135deg, var(--tg-orange), var(--tg-coral));
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(255,140,66,.35);
+            color: #fff; font-weight: 700; font-size: .9rem; box-shadow: 0 4px 12px rgba(255,140,66,.35);
         }
         .tg-btn-pill {
             background: linear-gradient(135deg, var(--tg-green), var(--tg-light));
@@ -136,144 +160,123 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg sticky-top tg-navbar">
-        <div class="container">
+    <nav class="navbar sticky-top tg-navbar">
+        <div class="container d-flex align-items-center">
+            <!-- Logo (Left) -->
             <a class="navbar-brand" href="{{ route('welcome') }}">
-                <span class="tg-logo-mark">T</span> Togetherly
+                <span class="tg-logo-mark">T</span> <span class="d-none d-sm-inline">Togetherly</span>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+
+            @auth
+                <!-- Center Navigation -->
+                <div class="tg-nav-center d-none d-lg-flex">
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                        <i class="fas fa-gauge-high"></i> Dashboard
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('food.*') ? 'active' : '' }}" href="{{ route('food.index') }}">
+                        <i class="fas fa-utensils"></i> Food
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('skills.*') ? 'active' : '' }}" href="{{ route('skills.index') }}">
+                        <i class="fas fa-lightbulb"></i> Skills
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('favorites.*') ? 'active' : '' }}" href="{{ route('favorites.index') }}">
+                        <i class="fas fa-bookmark"></i> Saved
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('impact') ? 'active' : '' }}" href="{{ route('impact') }}">
+                        <i class="fas fa-leaf"></i> Impact
+                    </a>
+                    <div class="tg-nav-divider"></div>
+                    <a class="nav-link position-relative {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.inbox') }}">
+                        <i class="fas fa-envelope"></i> Messages
+                        @php $unread = \App\Models\Message::where('recipient_id', Auth::id())->where('is_read', false)->count(); @endphp
+                        @if ($unread > 0)<span class="tg-nav-badge">{{ $unread }}</span>@endif
+                    </a>
+                </div>
+            @endauth
+
+            <!-- Right Side (Notifications, User, Language) -->
+            <div class="tg-nav-right">
                 @auth
-                    <form class="d-flex mx-lg-3 my-2 my-lg-0 flex-grow-1" style="max-width:380px;" action="{{ route('search') }}" method="GET">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="search" name="q" class="form-control border-start-0" placeholder="{{ __('app.nav.search_placeholder') }}" value="{{ request('q') }}" style="border-radius:0 30px 30px 0;">
-                        </div>
-                    </form>
-                @endauth
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-                    @auth
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                                <i class="fas fa-gauge-high me-1"></i> {{ __('app.nav.dashboard') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('food.*') ? 'active' : '' }}" href="{{ route('food.index') }}">
-                                <i class="fas fa-utensils me-1"></i> {{ __('app.nav.food') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('skills.*') ? 'active' : '' }}" href="{{ route('skills.index') }}">
-                                <i class="fas fa-lightbulb me-1"></i> {{ __('app.nav.skills') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('favorites.*') ? 'active' : '' }}" href="{{ route('favorites.index') }}">
-                                <i class="fas fa-bookmark me-1"></i> {{ __('app.nav.saved') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('impact') ? 'active' : '' }}" href="{{ route('impact') }}">
-                                <i class="fas fa-earth-asia me-1"></i> {{ __('app.nav.impact') }}
-                            </a>
-                        </li>
-                        <li class="nav-item position-relative">
-                            <a class="nav-link {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.inbox') }}">
-                                <i class="fas fa-envelope me-1"></i> {{ __('app.nav.messages') }}
-                                @php $unread = \App\Models\Message::where('recipient_id', Auth::id())->where('is_read', false)->count(); @endphp
-                                @if ($unread > 0)<span class="tg-nav-badge">{{ $unread }}</span>@endif
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown position-relative">
-                            <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-bell"></i>
-                                @php $noteCount = \App\Models\Notification::where('user_id', Auth::id())->where('is_read', false)->count(); @endphp
-                                @if ($noteCount > 0)<span class="tg-nav-badge">{{ $noteCount }}</span>@endif
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px; width:340px; max-height:420px; overflow-y:auto;">
-                                <li class="d-flex justify-content-between align-items-center px-3 py-2">
-                                    <strong>{{ __('app.nav.notifications') }}</strong>
-                                    <a href="{{ route('notifications.index') }}" class="small text-decoration-none" style="color:var(--tg-green)">{{ __('app.nav.view_all') }}</a>
-                                </li>
-                                <li><hr class="dropdown-divider my-1"></li>
-                                @php $recentNotes = \App\Models\Notification::where('user_id', Auth::id())->latest()->limit(6)->get(); @endphp
-                                @forelse ($recentNotes as $note)
-                                    <li>
-                                        <form action="{{ route('notifications.read', $note) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item d-flex gap-2 align-items-start py-2 {{ $note->is_read ? '' : 'bg-light' }}" style="white-space:normal;">
-                                                <i class="fas {{ $note->icon }} mt-1" style="color:var(--tg-green)"></i>
-                                                <span>
-                                                    <span class="d-block fw-semibold" style="font-size:.85rem;">{{ $note->title }}</span>
-                                                    <small class="text-muted">{{ $note->created_at->diffForHumans() }}</small>
-                                                </span>
-                                            </button>
-                                        </form>
-                                    </li>
-                                @empty
-                                    <li class="text-center text-muted py-3"><small>{{ __('app.nav.no_notifications') }}</small></li>
-                                @endforelse
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown ms-lg-2">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown">
-                                @if (Auth::user()->avatar)
-                                    <img src="{{ asset('storage/'.Auth::user()->avatar) }}" alt="" class="tg-avatar" style="object-fit:cover;">
-                                @else
-                                    <div class="tg-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                                @endif
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px;">
-                                <li class="px-3 py-2">
-                                    <div class="fw-bold">{{ Auth::user()->name }}</div>
-                                    <small class="text-muted">⭐ {{ number_format(Auth::user()->rating, 1) }} · {{ Auth::user()->profile?->neighborhood }}</small>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()) }}"><i class="fas fa-user me-2 text-muted"></i>{{ __('app.nav.my_profile') }}</a></li>
-                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-pen me-2 text-muted"></i>{{ __('app.nav.edit_profile') }}</a></li>
-                                <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-gauge-high me-2 text-muted"></i>{{ __('app.nav.dashboard') }}</a></li>
-                                @if (Auth::user()->is_admin)
-                                    <li><a class="dropdown-item" href="{{ route('admin.index') }}"><i class="fas fa-shield-halved me-2 text-muted"></i>{{ __('app.nav.admin_panel') }}</a></li>
-                                @endif
-                                <li><a class="dropdown-item" href="{{ route('claims.index') }}"><i class="fas fa-hand-holding-heart me-2 text-muted"></i>{{ __('app.nav.my_claims') }}</a></li>
-                                <li><a class="dropdown-item" href="{{ route('bookings.index') }}"><i class="fas fa-calendar-check me-2 text-muted"></i>{{ __('app.nav.my_bookings') }}</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                    <!-- Notifications Dropdown -->
+                    <div class="dropdown d-none d-lg-inline-block">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            @php $noteCount = \App\Models\Notification::where('user_id', Auth::id())->where('is_read', false)->count(); @endphp
+                            @if ($noteCount > 0)<span class="tg-nav-badge">{{ $noteCount }}</span>@endif
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px; width:320px; max-height:400px; overflow-y:auto;">
+                            <li class="d-flex justify-content-between align-items-center px-3 py-2">
+                                <strong>Notifications</strong>
+                                <a href="{{ route('notifications.index') }}" class="small text-decoration-none" style="color:var(--tg-green)">View All</a>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            @php $recentNotes = \App\Models\Notification::where('user_id', Auth::id())->latest()->limit(5)->get(); @endphp
+                            @forelse ($recentNotes as $note)
                                 <li>
-                                    <form action="{{ route('logout') }}" method="POST">
+                                    <form action="{{ route('notifications.read', $note) }}" method="POST">
                                         @csrf
-                                        <button class="dropdown-item text-danger" type="submit"><i class="fas fa-right-from-bracket me-2"></i>{{ __('app.nav.logout') }}</button>
+                                        <button type="submit" class="dropdown-item d-flex gap-2 align-items-start py-2 {{ $note->is_read ? '' : 'bg-light' }}" style="white-space:normal;">
+                                            <i class="fas {{ $note->icon }} mt-1" style="color:var(--tg-green)"></i>
+                                            <span>
+                                                <span class="d-block fw-semibold" style="font-size:.85rem;">{{ $note->title }}</span>
+                                                <small class="text-muted">{{ $note->created_at->diffForHumans() }}</small>
+                                            </span>
+                                        </button>
                                     </form>
                                 </li>
-                            </ul>
-                        </li>
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">{{ __('app.nav.login') }}</a></li>
-                        <li class="nav-item ms-lg-2"><a class="tg-btn-pill" href="{{ route('register') }}">{{ __('app.nav.get_started') }}</a></li>
-                    @endauth
+                            @empty
+                                <li class="text-center text-muted py-3"><small>No notifications</small></li>
+                            @endforelse
+                        </ul>
+                    </div>
 
-                    {{-- Language switcher (English / 한국어) --}}
-                    <li class="nav-item dropdown ms-lg-2">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-globe me-1"></i> {{ app()->getLocale() === 'ko' ? '한국어' : 'EN' }}
+                    <!-- User Menu Dropdown -->
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if (Auth::user()->avatar)
+                                <img src="{{ asset('storage/'.Auth::user()->avatar) }}" alt="" class="tg-avatar" style="object-fit:cover;">
+                            @else
+                                <div class="tg-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                            @endif
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px;">
-                            <li class="px-3 py-1"><small class="text-muted">{{ __('app.language') }}</small></li>
-                            <li>
-                                <a class="dropdown-item d-flex justify-content-between align-items-center {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">
-                                    {{ __('app.lang_en') }} @if(app()->getLocale() === 'en')<i class="fas fa-check"></i>@endif
-                                </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px; min-width:220px;">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-bold small">{{ Auth::user()->name }}</div>
+                                <small class="text-muted">⭐ {{ number_format(Auth::user()->rating, 1) }}</small>
                             </li>
+                            <li><a class="dropdown-item small py-2" href="{{ route('profile.show', Auth::user()) }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item small py-2" href="{{ route('profile.edit') }}"><i class="fas fa-pen me-2"></i>Edit</a></li>
+                            <li><a class="dropdown-item small py-2" href="{{ route('claims.index') }}"><i class="fas fa-hand-holding-heart me-2"></i>Claims</a></li>
+                            <li><a class="dropdown-item small py-2" href="{{ route('bookings.index') }}"><i class="fas fa-calendar-check me-2"></i>Bookings</a></li>
+                            @if (Auth::user()->is_admin)
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li><a class="dropdown-item small py-2 text-primary fw-semibold" href="{{ route('admin.index') }}"><i class="fas fa-shield-halved me-2"></i>Admin</a></li>
+                            @endif
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
-                                <a class="dropdown-item d-flex justify-content-between align-items-center {{ app()->getLocale() === 'ko' ? 'active' : '' }}" href="{{ route('locale.switch', 'ko') }}">
-                                    {{ __('app.lang_ko') }} @if(app()->getLocale() === 'ko')<i class="fas fa-check"></i>@endif
-                                </a>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button class="dropdown-item small py-2 text-danger" type="submit"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                                </form>
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="dropdown d-none d-lg-inline-block">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px;">
+                            <li><a class="dropdown-item small {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">English @if(app()->getLocale() === 'en')<i class="fas fa-check ms-2"></i>@endif</a></li>
+                            <li><a class="dropdown-item small {{ app()->getLocale() === 'ko' ? 'active' : '' }}" href="{{ route('locale.switch', 'ko') }}">한국어 @if(app()->getLocale() === 'ko')<i class="fas fa-check ms-2"></i>@endif</a></li>
+                        </ul>
+                    </div>
+                @else
+                    <!-- Guest Buttons -->
+                    <a class="nav-link small" href="{{ route('login') }}">Login</a>
+                    <a class="tg-btn-pill" href="{{ route('register') }}">Get Started</a>
+                @endauth
             </div>
         </div>
     </nav>

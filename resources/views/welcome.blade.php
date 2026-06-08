@@ -466,6 +466,67 @@
     </div>
 </section>
 
+{{-- ============ RECENT COMMUNITY POSTS ============ --}}
+<section class="tg-section tg-solution">
+    <div class="container">
+        <div class="text-center mb-5 reveal r-up">
+            <span class="tg-eyebrow">Community Feed</span>
+            <h2 class="tg-heading">Explore What's Available Now</h2>
+            <p class="tg-sub">Browse food and skills being shared in your community</p>
+        </div>
+
+        <div class="row g-3">
+            @forelse ($recentFoodPosts as $post)
+                <div class="col-md-6 col-lg-4 reveal r-up">
+                    <a href="{{ route('food.public-show', $post) }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm" style="transition:all .3s;cursor:pointer;">
+                            @if ($post->image)
+                                <img src="{{ asset('storage/'.$post->image) }}" class="card-img-top" style="height:200px;object-fit:cover;" alt="{{ $post->title }}">
+                            @else
+                                <div style="height:200px;background:linear-gradient(135deg,#ff8c42,#ff6f5e);display:flex;align-items:center;justify-content:center;color:#fff;font-size:3rem;"><i class="fas fa-utensils"></i></div>
+                            @endif
+                            <div class="card-body">
+                                <div class="badge bg-warning text-dark mb-2">Food</div>
+                                <h6 class="fw-bold">{{ $post->title }}</h6>
+                                <small class="text-muted d-block mb-3">{{ $post->neighborhood }}</small>
+                                <small class="text-muted"><i class="fas fa-clock"></i> Expires {{ $post->expires_at->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @empty
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No food posts available yet</p>
+                </div>
+            @endforelse
+
+            @forelse ($recentSkillPosts as $post)
+                <div class="col-md-6 col-lg-4 reveal r-up">
+                    <a href="{{ route('skills.public-show', $post) }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm" style="transition:all .3s;cursor:pointer;">
+                            @if ($post->image)
+                                <img src="{{ asset('storage/'.$post->image) }}" class="card-img-top" style="height:200px;object-fit:cover;" alt="{{ $post->title }}">
+                            @else
+                                <div style="height:200px;background:linear-gradient(135deg,#2d8f7f,#45b4a1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:3rem;"><i class="fas fa-lightbulb"></i></div>
+                            @endif
+                            <div class="card-body">
+                                <div class="badge bg-success mb-2">{{ $post->category }}</div>
+                                <h6 class="fw-bold">{{ $post->title }}</h6>
+                                <small class="text-muted d-block mb-3">{{ $post->neighborhood }}</small>
+                                <small class="text-muted"><i class="fas fa-star"></i> {{ ucfirst($post->skill_level) }}</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @empty
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No skill posts available yet</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
 {{-- ============ HOW IT WORKS ============ --}}
 <section class="tg-section">
     <span class="tg-orb" style="width:300px;height:300px;background:rgba(45,143,127,.1);bottom:0;right:-100px;"></span>

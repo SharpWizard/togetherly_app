@@ -15,9 +15,7 @@ use App\Http\Controllers\ImpactController;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [DashboardController::class, 'welcome'])->name('welcome');
 
 // Language switcher (English / Korean) — available on every page
 Route::get('/lang/{locale}', function (string $locale) {
@@ -27,6 +25,10 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return redirect()->back();
 })->name('locale.switch');
+
+// Public post viewing (no auth required)
+Route::get('/public/food/{foodPost}', [FoodPostController::class, 'publicShow'])->name('food.public-show');
+Route::get('/public/skills/{skillPost}', [SkillPostController::class, 'publicShow'])->name('skills.public-show');
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
@@ -126,11 +128,23 @@ Route::middleware('auth')->group(function () {
     // Admin
     Route::prefix('/admin')->name('admin.')->middleware('admin')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
+
+        // User Management
         Route::get('/users', [AdminController::class, 'users'])->name('users');
         Route::post('/users/{user}/verify', [AdminController::class, 'toggleVerify'])->name('users.verify');
         Route::post('/users/{user}/admin', [AdminController::class, 'toggleAdmin'])->name('users.admin');
+        Route::post('/users/{user}/suspend', [AdminController::class, 'suspendUser'])->name('users.suspend');
+        Route::post('/users/{user}/unsuspend', [AdminController::class, 'unsuspendUser'])->name('users.unsuspend');
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+
+        // Post Management
+        Route::get('/posts', [AdminController::class, 'posts'])->name('posts');
+        Route::get('/food-posts', [AdminController::class, 'foodPosts'])->name('food-posts');
+        Route::get('/skill-posts', [AdminController::class, 'skillPosts'])->name('skill-posts');
         Route::delete('/food/{foodPost}', [AdminController::class, 'deleteFood'])->name('food.delete');
         Route::delete('/skills/{skillPost}', [AdminController::class, 'deleteSkill'])->name('skills.delete');
+
+        // Reports
         Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
         Route::post('/reports/{report}/dismiss', [AdminController::class, 'dismissReport'])->name('reports.dismiss');
         Route::post('/reports/{report}/action', [AdminController::class, 'actionReport'])->name('reports.action');

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@php use App\Models\User; @endphp
+
 @section('title', __('app.admin.users_title'))
 
 @section('extra_css')
@@ -44,15 +46,27 @@
                     </div>
                     <div class="small text-muted">{{ $u->email }} · {{ $u->profile?->neighborhood ?? '—' }} · ⭐ {{ number_format($u->rating,1) }}</div>
                 </div>
-                <div class="d-flex gap-2">
-                    <form action="{{ route('admin.users.verify', $u) }}" method="POST">@csrf
-                        <button class="btn btn-sm {{ $u->profile?->is_verified ? 'btn-secondary' : 'btn-outline-primary' }}">
-                            <i class="fas fa-circle-check me-1"></i>{{ $u->profile?->is_verified ? __('app.admin.unverify') : __('app.admin.verify') }}
+                <div class="d-flex gap-1 flex-wrap">
+                    <form action="{{ route('admin.users.verify', $u) }}" method="POST" style="display:inline;">@csrf
+                        <button class="btn btn-sm {{ $u->profile?->is_verified ? 'btn-secondary' : 'btn-outline-primary' }}" title="Toggle verification">
+                            <i class="fas fa-circle-check me-1"></i>{{ $u->profile?->is_verified ? 'Unverify' : 'Verify' }}
                         </button>
                     </form>
-                    <form action="{{ route('admin.users.admin', $u) }}" method="POST">@csrf
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-shield-halved me-1"></i>{{ $u->is_admin ? __('app.admin.revoke') : __('app.admin.make_admin') }}
+                    <form action="{{ route('admin.users.admin', $u) }}" method="POST" style="display:inline;">@csrf
+                        <button class="btn btn-sm btn-outline-primary" title="Toggle admin role">
+                            <i class="fas fa-shield-halved me-1"></i>{{ $u->is_admin ? 'Revoke' : 'Admin' }}
+                        </button>
+                    </form>
+                    @if (!$u->is_admin || User::where('is_admin', true)->count() > 1)
+                        <form action="{{ route('admin.users.'.($u->is_suspended ? 'unsuspend' : 'suspend'), $u) }}" method="POST" style="display:inline;">@csrf
+                            <button class="btn btn-sm {{ $u->is_suspended ? 'btn-warning' : 'btn-outline-warning' }}" title="Suspend user">
+                                <i class="fas fa-ban me-1"></i>{{ $u->is_suspended ? 'Unsuspend' : 'Suspend' }}
+                            </button>
+                        </form>
+                    @endif
+                    <form action="{{ route('admin.users.delete', $u) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this user and all their posts? This cannot be undone.');">@csrf @method('DELETE')
+                        <button class="btn btn-sm btn-outline-danger" title="Delete user">
+                            <i class="fas fa-trash me-1"></i>Delete
                         </button>
                     </form>
                 </div>

@@ -3,18 +3,33 @@
 @section('title', $foodPost->title)
 
 @section('extra_css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
 <style>
-    .tg-show-img { height:360px; object-fit:cover; width:100%; border-radius:18px; }
-    .tg-show-ph { height:360px; border-radius:18px; display:flex;align-items:center;justify-content:center;
-        font-size:4rem; color:#fff; background:linear-gradient(135deg,#ff8c42,#ff6f5e); }
-    .tg-meta { background:#fff; border-radius:14px; padding:16px; text-align:center; box-shadow:0 3px 12px rgba(0,0,0,.04); }
-    .tg-meta .v { font-weight:800; color:var(--tg-dark); }
-    .tg-poster { width:54px;height:54px;border-radius:50%; background:linear-gradient(135deg,var(--tg-orange),var(--tg-coral));
-        color:#fff; display:flex;align-items:center;justify-content:center; font-size:1.4rem; font-weight:700; }
-    .tg-claim-row { background:#f7faf8; border:1px solid #e6efe9; border-radius:12px; padding:12px 14px; margin-bottom:8px; }
-    .tg-status { font-size:.72rem; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:capitalize; }
-    .s-pending { background:#fff3cd; color:#b8860b; } .s-accepted { background:#d8f0e9; color:#1c6b5b; }
-    .s-declined,.s-cancelled { background:#fde2e0; color:#a33; } .s-completed { background:#e3f3ee; color:#2d8f7f; }
+    .gallery-main { position: relative; height: 400px; border-radius: 16px; overflow: hidden; background: #f0f3f0; }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .gallery-thumb { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid #e2e8e4; transition: all .2s; }
+    .gallery-thumb.active { border-color: var(--tg-green); box-shadow: 0 0 0 2px rgba(45,143,127,.2); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .map-container { height: 300px; border-radius: 16px; overflow: hidden; margin: 20px 0; }
+    .share-buttons { display: flex; gap: 10px; }
+    .share-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #e2e8e4; background: #fff; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 6px; font-size: .9rem; font-weight: 600; }
+    .share-btn:hover { background: #f0f3f0; border-color: var(--tg-green); color: var(--tg-green); }
+    .user-card { background: linear-gradient(135deg,#ff8c42,#ff6f5e); color: #fff; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+    .user-avatar { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; }
+    .user-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .stat-item { background: rgba(255,255,255,.15); padding: 12px; border-radius: 10px; }
+    .stat-label { font-size: .85rem; opacity: .9; }
+    .stat-value { font-size: 1.3rem; font-weight: 700; }
+    .recommendations { margin-top: 40px; padding-top: 40px; border-top: 2px solid #f0f3f0; }
+    .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+    .rec-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: all .2s; cursor: pointer; }
+    .rec-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,.1); }
+    .rec-img { height: 140px; background: linear-gradient(135deg,#ff8c42,#ff6f5e); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; }
+    .rec-img img { width: 100%; height: 100%; object-fit: cover; }
+    .rec-body { padding: 12px; }
+    .rec-title { font-weight: 700; font-size: .9rem; color: #16302d; margin-bottom: 6px; }
+    .rec-meta { font-size: .8rem; color: #9aa6a0; }
 </style>
 @endsection
 
@@ -24,189 +39,232 @@
     $myClaim = \App\Models\Claim::where('food_post_id',$foodPost->id)->where('user_id',Auth::id())->latest()->first();
     $claims = $isOwner ? \App\Models\Claim::where('food_post_id',$foodPost->id)->with('claimer')->latest()->get() : collect();
 @endphp
+
 <div class="container my-4 my-lg-5">
-    <a href="{{ route('food.index') }}" class="text-decoration-none text-muted mb-3 d-inline-block"><i class="fas fa-arrow-left me-1"></i> {{ __('app.food.back_to_food') }}</a>
+    <a href="{{ route('food.index') }}" class="text-decoration-none text-muted mb-3 d-inline-block"><i class="fas fa-arrow-left me-1"></i>Back to Food</a>
+
     <div class="row g-4">
+        <!-- Main Content -->
         <div class="col-lg-8">
+            <!-- Gallery -->
+            <div class="gallery-main" id="mainImage">
+                @if ($foodPost->image)
+                    <img src="{{ asset('storage/'.$foodPost->image) }}" alt="{{ $foodPost->title }}" id="galleryImage">
+                @else
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;font-size:3rem;">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Thumbnails (if multiple images) -->
             @if ($foodPost->image)
-                <img src="{{ asset('storage/'.$foodPost->image) }}" class="tg-show-img mb-4" alt="{{ $foodPost->title }}">
-            @else
-                <div class="tg-show-ph mb-4"><i class="fas fa-utensils"></i></div>
+            <div class="gallery-thumbs">
+                <div class="gallery-thumb active" onclick="changeImage('{{ asset('storage/'.$foodPost->image) }}')">
+                    <img src="{{ asset('storage/'.$foodPost->image) }}" alt="{{ $foodPost->title }}">
+                </div>
+            </div>
             @endif
 
-            <div class="card">
+            <!-- Share Buttons -->
+            <div class="share-buttons mt-4 mb-4">
+                <button class="share-btn" onclick="shareVia('whatsapp')"><i class="fab fa-whatsapp"></i>Share</button>
+                <button class="share-btn" onclick="shareVia('email')"><i class="fas fa-envelope"></i>Email</button>
+                <button class="share-btn" onclick="copyLink()"><i class="fas fa-link"></i>Copy Link</button>
+            </div>
+
+            <!-- Post Details -->
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h1 class="fw-bold mb-0">{{ $foodPost->title }}</h1>
-                        <span class="badge bg-info fs-6">{{ __('app.statuses.'.$foodPost->status) }}</span>
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="fw-bold mb-1">{{ $foodPost->title }}</h1>
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted {{ $foodPost->created_at->diffForHumans() }}</small>
+                        </div>
+                        <span class="badge bg-warning text-dark fs-6">{{ ucfirst($foodPost->status) }}</span>
                     </div>
+
                     <p class="text-muted">{{ $foodPost->description }}</p>
 
-                    <div class="row g-3 my-3">
-                        <div class="col-4"><div class="tg-meta"><div class="text-muted small">{{ __('app.food.type') }}</div><div class="v">{{ __('app.food_types.'.$foodPost->food_type) }}</div></div></div>
-                        <div class="col-4"><div class="tg-meta"><div class="text-muted small">{{ __('app.food.quantity') }}</div><div class="v">{{ $foodPost->quantity }}</div></div></div>
-                        <div class="col-4"><div class="tg-meta"><div class="text-muted small">{{ __('app.food.expires') }}</div><div class="v">{{ $foodPost->expires_at->diffForHumans() }}</div></div></div>
+                    <div class="row g-3 my-4">
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light p-3 text-center">
+                                <small class="text-muted">Type</small>
+                                <div class="fw-bold">{{ ucfirst($foodPost->food_type) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light p-3 text-center">
+                                <small class="text-muted">Quantity</small>
+                                <div class="fw-bold">{{ $foodPost->quantity }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light p-3 text-center">
+                                <small class="text-muted">Expires</small>
+                                <div class="fw-bold">{{ $foodPost->expires_at->diffForHumans() }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light p-3 text-center">
+                                <small class="text-muted">Views</small>
+                                <div class="fw-bold">{{ $foodPost->views }}</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <hr>
-                    <h6 class="fw-bold mb-3">{{ __('app.food.shared_by') }}</h6>
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <a href="{{ route('profile.show', $foodPost->user) }}" class="d-flex align-items-center gap-3 text-decoration-none">
-                            <div class="tg-poster">{{ strtoupper(substr($foodPost->user->name,0,1)) }}</div>
-                            <div>
-                                <div class="fw-bold text-dark">{{ $foodPost->user->name }}</div>
-                                <small class="text-muted">⭐ {{ number_format($foodPost->user->rating,1) }} ({{ $foodPost->user->total_ratings }} {{ __('app.dashboard.ratings') }})</small>
-                            </div>
-                        </a>
-                        @if (!$isOwner)
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a href="{{ route('messages.conversation', $foodPost->user_id) }}" class="btn btn-outline-primary"><i class="fas fa-envelope me-1"></i>{{ __('app.food.message') }}</a>
-                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ratingModal"><i class="fas fa-star me-1"></i>{{ __('app.rate.rate') }}</button>
-                                <button class="btn btn-link text-muted text-decoration-none btn-sm" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="fas fa-flag me-1"></i>{{ __('app.report.report') }}</button>
-                            </div>
-                        @endif
-                    </div>
+                    <!-- Map -->
+                    @if ($foodPost->latitude && $foodPost->longitude)
+                    <h6 class="fw-bold mt-4 mb-3"><i class="fas fa-map-location-dot me-2"></i>Pickup Location</h6>
+                    <div class="map-container" id="map"></div>
+                    @endif
                 </div>
             </div>
 
-            {{-- Owner: manage claims --}}
+            <!-- Claims/Actions -->
             @if ($isOwner && $claims->count())
-                <div class="card mt-4">
+                <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <h6 class="fw-bold mb-3"><i class="fas fa-hand-holding-heart me-2 text-warning"></i>{{ __('app.food.claim_requests') }} ({{ $claims->where('status','pending')->count() }} {{ __('app.food.pending_count') }})</h6>
+                        <h6 class="fw-bold mb-3"><i class="fas fa-hand-holding-heart me-2"></i>Claim Requests</h6>
                         @foreach ($claims as $claim)
-                            <div class="tg-claim-row d-flex flex-wrap justify-content-between align-items-center gap-2">
-                                <div>
-                                    <strong>{{ $claim->claimer->name }}</strong>
-                                    <span class="tg-status s-{{ $claim->status }} ms-1">{{ __('app.statuses.'.$claim->status) }}</span>
-                                    @if ($claim->message)<div class="small text-muted">{{ $claim->message }}</div>@endif
-                                </div>
-                                <div class="d-flex gap-2">
-                                    @if ($claim->status === 'pending')
-                                        <form action="{{ route('claims.accept', $claim) }}" method="POST">@csrf<button class="btn btn-primary btn-sm">{{ __('app.food.accept') }}</button></form>
-                                        <form action="{{ route('claims.decline', $claim) }}" method="POST">@csrf<button class="btn btn-light btn-sm">{{ __('app.food.decline') }}</button></form>
-                                    @elseif ($claim->status === 'accepted')
-                                        <form action="{{ route('claims.complete', $claim) }}" method="POST">@csrf<button class="btn btn-secondary btn-sm">{{ __('app.food.mark_completed') }}</button></form>
-                                    @endif
+                            <div style="background:#f7faf8;border:1px solid #e6efe9;border-radius:10px;padding:12px;margin-bottom:10px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ $claim->claimer->name }}</strong>
+                                        <span class="badge ms-2" style="background:{{ $claim->status === 'pending' ? '#fff3cd' : '#d8f0e9' }};color:{{ $claim->status === 'pending' ? '#b8860b' : '#1c6b5b' }};">{{ ucfirst($claim->status) }}</span>
+                                        @if ($claim->message)<div class="small text-muted mt-2">{{ $claim->message }}</div>@endif
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        @if ($claim->status === 'pending')
+                                            <form action="{{ route('claims.accept', $claim) }}" method="POST" style="display:inline;">@csrf<button class="btn btn-sm btn-success">Accept</button></form>
+                                            <form action="{{ route('claims.decline', $claim) }}" method="POST" style="display:inline;">@csrf<button class="btn btn-sm btn-light">Decline</button></form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
-        </div>
 
-        {{-- Sidebar --}}
-        <div class="col-lg-4">
-            <div class="card sticky-top" style="top:90px;">
-                <div class="card-body p-4">
-                    @if ($isOwner)
-                        <h6 class="fw-bold mb-3">{{ __('app.food.manage_post') }}</h6>
-                        <a href="{{ route('food.edit', $foodPost) }}" class="btn btn-secondary w-100 mb-2"><i class="fas fa-edit me-1"></i>{{ __('app.food.edit_post') }}</a>
-                        <form action="{{ route('food.destroy', $foodPost) }}" method="POST" onsubmit="return confirm('{{ __('app.food.delete_confirm') }}')">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-outline-primary w-100"><i class="fas fa-trash me-1"></i>{{ __('app.common.delete') }}</button>
-                        </form>
-                    @else
-                        @php $saved = \App\Models\Favorite::hasFood($foodPost->id); @endphp
-                        <form action="{{ route('favorites.food', $foodPost) }}" method="POST" class="mb-3">@csrf
-                            <button class="btn {{ $saved ? 'btn-secondary' : 'btn-outline-primary' }} w-100">
-                                <i class="fas fa-heart me-1"></i>{{ $saved ? __('app.food.saved') : __('app.food.save_for_later') }}
-                            </button>
-                        </form>
-                        <h6 class="fw-bold mb-2"><i class="fas fa-hand-holding-heart text-warning me-1"></i>{{ __('app.food.claim_this') }}</h6>
-                        @if ($myClaim && in_array($myClaim->status, ['pending','accepted']))
-                            <div class="alert alert-success small mb-2">
-                                {{ __('app.food.your_claim_is') }} <strong>{{ __('app.statuses.'.$myClaim->status) }}</strong>.
-                                @if ($myClaim->status==='accepted') {{ __('app.food.arrange_pickup') }} @endif
+            <!-- Recommendations -->
+            <div class="recommendations">
+                <h5 class="fw-bold mb-1"><i class="fas fa-sparkles me-2"></i>Similar Posts</h5>
+                <p class="text-muted small">You might also like...</p>
+                <div class="rec-grid">
+                    @forelse ($recommendations ?? [] as $rec)
+                        <a href="{{ route('food.show', $rec) }}" class="rec-card text-decoration-none">
+                            <div class="rec-img">
+                                @if ($rec->image)
+                                    <img src="{{ asset('storage/'.$rec->image) }}" alt="{{ $rec->title }}">
+                                @else
+                                    <i class="fas fa-utensils"></i>
+                                @endif
                             </div>
-                            <form action="{{ route('claims.cancel', $myClaim) }}" method="POST">@csrf
-                                <button class="btn btn-outline-primary w-100">{{ __('app.food.cancel_claim') }}</button>
-                            </form>
-                        @elseif ($foodPost->status !== 'available')
-                            <div class="alert alert-info small mb-0">{{ __('app.food.no_longer_available') }}</div>
-                        @else
-                            <p class="text-muted small">{{ __('app.food.request_pickup') }}</p>
-                            <form action="{{ route('claims.store', $foodPost) }}" method="POST">
-                                @csrf
-                                <textarea name="message" class="form-control mb-2" rows="2" placeholder="{{ __('app.food.claim_note_placeholder') }}"></textarea>
-                                <button class="btn btn-primary w-100"><i class="fas fa-hand-holding-heart me-1"></i>{{ __('app.food.claim_food') }}</button>
-                            </form>
-                        @endif
-                    @endif
-
-                    <hr>
-                    <div class="small text-muted">
-                        <div class="mb-1"><i class="fas fa-location-dot me-2"></i>{{ $foodPost->neighborhood }}</div>
-                        <div class="mb-1"><i class="fas fa-eye me-2"></i>{{ $foodPost->views }} {{ __('app.food.views') }}</div>
-                        <div class="mb-1"><i class="fas fa-clock me-2"></i>{{ __('app.food.posted') }} {{ $foodPost->created_at->diffForHumans() }}</div>
-                        <div><i class="fas fa-hourglass-half me-2"></i>{{ __('app.food.expires_at') }} {{ $foodPost->expires_at->format('M d, H:i') }}</div>
-                    </div>
+                            <div class="rec-body">
+                                <div class="rec-title">{{ Str::limit($rec->title, 20) }}</div>
+                                <div class="rec-meta">⭐ {{ number_format($rec->user->rating, 1) }} · {{ Str::limit($rec->neighborhood, 15) }}</div>
+                            </div>
+                        </a>
+                    @empty
+                        <p class="text-muted">No similar posts available</p>
+                    @endforelse
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-{{-- Rating modal --}}
-@if (!$isOwner)
-<div class="modal fade" id="ratingModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:18px;">
-            <form action="{{ route('ratings.store') }}" method="POST">@csrf
-                <div class="modal-header border-0"><h5 class="modal-title">{{ __('app.rate.rate_user', ['name' => $foodPost->user->name]) }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <input type="hidden" name="rated_user_id" value="{{ $foodPost->user_id }}">
-                    <input type="hidden" name="post_type" value="food">
-                    <input type="hidden" name="post_id" value="{{ $foodPost->id }}">
-                    <label class="form-label">{{ __('app.rate.rating') }}</label>
-                    <select class="form-select mb-3" name="rating" required>
-                        <option value="5">★★★★★ {{ __('app.rate.excellent') }}</option>
-                        <option value="4">★★★★ {{ __('app.rate.good') }}</option>
-                        <option value="3">★★★ {{ __('app.rate.average') }}</option>
-                        <option value="2">★★ {{ __('app.rate.poor') }}</option>
-                        <option value="1">★ {{ __('app.rate.very_poor') }}</option>
-                    </select>
-                    <label class="form-label">{{ __('app.rate.comment_optional') }}</label>
-                    <textarea class="form-control" name="comment" rows="3"></textarea>
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- User Card -->
+            <div class="user-card">
+                <div class="user-avatar">{{ strtoupper(substr($foodPost->user->name, 0, 1)) }}</div>
+                <h5 class="fw-bold mb-1">{{ $foodPost->user->name }}</h5>
+                <small style="opacity:.9;">{{ $foodPost->user->profile?->neighborhood ?? 'Community Member' }}</small>
+
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Rating</div>
+                        <div class="stat-value">⭐ {{ number_format($foodPost->user->rating, 1) }}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Reviews</div>
+                        <div class="stat-value">{{ $foodPost->user->total_ratings }}</div>
+                    </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('app.common.cancel') }}</button>
-                    <button type="submit" class="btn btn-primary">{{ __('app.rate.submit_rating') }}</button>
-                </div>
-            </form>
+            </div>
+
+            <!-- Action Card -->
+            @auth
+                @if (!$isOwner)
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            @if ($myClaim && in_array($myClaim->status, ['pending','accepted']))
+                                <div class="alert alert-success small mb-3">
+                                    ✓ Your claim is <strong>{{ ucfirst($myClaim->status) }}</strong>
+                                </div>
+                                <form action="{{ route('claims.cancel', $myClaim) }}" method="POST">@csrf
+                                    <button class="btn btn-outline-primary w-100">Cancel Claim</button>
+                                </form>
+                            @else
+                                <h6 class="fw-bold mb-3">Interested in this food?</h6>
+                                <form action="{{ route('claims.store', $foodPost) }}" method="POST">
+                                    @csrf
+                                    <textarea name="message" class="form-control mb-3" rows="3" placeholder="Add a note (optional)"></textarea>
+                                    <button class="btn btn-primary w-100"><i class="fas fa-hand-holding-heart me-2"></i>Request This Food</button>
+                                </form>
+                            @endif
+
+                            <hr>
+
+                            <form action="{{ route('favorites.food', $foodPost) }}" method="POST">@csrf
+                                <button class="btn btn-outline-primary w-100"><i class="fas fa-heart me-2"></i>Save for Later</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3">Manage Post</h6>
+                            <a href="{{ route('food.edit', $foodPost) }}" class="btn btn-secondary w-100 mb-2"><i class="fas fa-edit me-2"></i>Edit</a>
+                            <form action="{{ route('food.destroy', $foodPost) }}" method="POST" onsubmit="return confirm('Delete this post?');">@csrf @method('DELETE')
+                                <button class="btn btn-outline-danger w-100"><i class="fas fa-trash me-2"></i>Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+            @else
+                <a href="{{ route('register') }}" class="btn btn-primary w-100 mb-2">Sign Up to Claim</a>
+            @endauth
         </div>
     </div>
 </div>
 
-{{-- Report modal --}}
-<div class="modal fade" id="reportModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:18px;">
-            <form action="{{ route('reports.food', $foodPost) }}" method="POST">@csrf
-                <div class="modal-header border-0"><h5 class="modal-title"><i class="fas fa-flag text-danger me-2"></i>{{ __('app.report.report_post') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <label class="form-label">{{ __('app.report.reason') }}</label>
-                    <select class="form-select mb-3" name="reason" required>
-                        <option value="">{{ __('app.report.select_reason') }}</option>
-                        <option value="Spam or scam">{{ __('app.report.spam') }}</option>
-                        <option value="Inappropriate content">{{ __('app.report.inappropriate') }}</option>
-                        <option value="Unsafe / spoiled food">{{ __('app.report.unsafe') }}</option>
-                        <option value="Misleading">{{ __('app.report.misleading') }}</option>
-                        <option value="Other">{{ __('app.report.other') }}</option>
-                    </select>
-                    <label class="form-label">{{ __('app.report.details_optional') }}</label>
-                    <textarea class="form-control" name="details" rows="3" placeholder="{{ __('app.report.details_placeholder') }}"></textarea>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('app.common.cancel') }}</button>
-                    <button type="submit" class="btn btn-danger">{{ __('app.report.submit_report') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<script>
+    function changeImage(src) {
+        document.getElementById('galleryImage').src = src;
+    }
+
+    function shareVia(platform) {
+        const url = window.location.href;
+        const title = '{{ $foodPost->title }}';
+
+        if (platform === 'whatsapp') {
+            window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`);
+        } else if (platform === 'email') {
+            window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`);
+        }
+    }
+
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied!');
+    }
+
+    @if ($foodPost->latitude && $foodPost->longitude)
+    const map = L.map('map').setView([{{ $foodPost->latitude }}, {{ $foodPost->longitude }}], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.marker([{{ $foodPost->latitude }}, {{ $foodPost->longitude }}]).addTo(map).bindPopup('{{ $foodPost->title }}');
+    @endif
+</script>
 @endsection

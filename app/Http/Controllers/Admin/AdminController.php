@@ -106,4 +106,114 @@ class AdminController extends Controller
 
         return back()->with('success', 'Post removed and report resolved.');
     }
+
+    public function posts(Request $request)
+    {
+        $type = $request->input('type', 'all');
+        $search = $request->input('q');
+
+        if ($type === 'food' || $type === 'all') {
+            $foodQuery = FoodPost::with('user');
+            if ($search) {
+                $foodQuery->where(function ($w) use ($search) {
+                    $w->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+            $foodPosts = $foodQuery->latest()->paginate(15, ['*'], 'food_page');
+        } else {
+            $foodPosts = null;
+        }
+
+        if ($type === 'skill' || $type === 'all') {
+            $skillQuery = SkillPost::with('user');
+            if ($search) {
+                $skillQuery->where(function ($w) use ($search) {
+                    $w->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+            $skillPosts = $skillQuery->latest()->paginate(15, ['*'], 'skill_page');
+        } else {
+            $skillPosts = null;
+        }
+
+        return view('admin.posts', compact('foodPosts', 'skillPosts', 'type', 'search'));
+    }
+
+    public function suspendUser(User $user)
+    {
+        if ($user->is_admin) {
+            return back()->with('error', 'Cannot suspend admin users.');
+        }
+
+        $user->update(['is_suspended' => true]);
+        return back()->with('success', $user->name . ' has been suspended.');
+    }
+
+    public function unsuspendUser(User $user)
+    {
+        $user->update(['is_suspended' => false]);
+        return back()->with('success', $user->name . ' has been unsuspended.');
+    }
+
+    public function deleteUser(User $user)
+    {
+        if ($user->is_admin && User::where('is_admin', true)->count() === 1) {
+            return back()->with('error', 'Cannot delete the last admin user.');
+        }
+
+        $name = $user->name;
+        FoodPost::where('user_id', $user->id)->delete();
+        SkillPost::where('user_id', $user->id)->delete();
+        $user->delete();
+
+        return back()->with('success', $name . ' and all their posts have been deleted.');
+    }
+
+    public function foodPosts(Request $request)
+    {
+        $search = $request->input('q');
+        $status = $request->input('status');
+
+        $query = FoodPost::with('user');
+
+        if ($search) {
+            $query->where(function ($w) use ($search) {
+                $w->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $foodPosts = $query->latest()->paginate(20)->withQueryString();
+
+        return view('admin.food-posts', compact('foodPosts', 'search', 'status'));
+    }
+
+    public function skillPosts(Request $request)
+    {
+        $search = $request->input('q');
+        $status = $request->input('status');
+
+        $query = SkillPost::with('user');
+
+        if ($search) {
+            $query->where(function ($w) use ($search) {
+                $w->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $skillPosts = $query->latest()->paginate(20)->withQueryString();
+
+        return view('admin.skill-posts', compact('skillPosts', 'search', 'status'));
+    }
 }
