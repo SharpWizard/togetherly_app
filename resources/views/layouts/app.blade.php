@@ -160,6 +160,26 @@
         .alert-danger { background: #fde2e0; color: #a33; }
         .alert-info { background: #e3f3ee; color: #2d6b5f; }
 
+        /* ===== PAGINATION (themed to match green palette) ===== */
+        .pagination { gap: 6px; flex-wrap: wrap; justify-content: center; }
+        .pagination .page-link {
+            color: var(--tg-green); border: 1.5px solid #dbe6e2; border-radius: 10px !important;
+            padding: 8px 14px; font-weight: 600; min-width: 42px; text-align: center; transition: all .2s;
+        }
+        .pagination .page-link:hover {
+            background: rgba(45,143,127,.1); border-color: var(--tg-light); color: var(--tg-green);
+        }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--tg-green), var(--tg-light));
+            border-color: var(--tg-green); color: #fff; box-shadow: 0 6px 16px rgba(45,143,127,.3);
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #b6c2bd; background: #fff; border-color: #eef2ef;
+        }
+        .pagination .page-link:focus {
+            box-shadow: 0 0 0 .2rem rgba(69,180,161,.25); border-color: var(--tg-light);
+        }
+
         /* ===== FOOTER ===== */
         .tg-footer {
             background: var(--tg-dark); color: rgba(255,255,255,.85);
