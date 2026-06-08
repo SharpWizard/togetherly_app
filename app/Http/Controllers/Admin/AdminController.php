@@ -109,36 +109,10 @@ class AdminController extends Controller
 
     public function posts(Request $request)
     {
-        $type = $request->input('type', 'all');
-        $search = $request->input('q');
-
-        if ($type === 'food' || $type === 'all') {
-            $foodQuery = FoodPost::with('user');
-            if ($search) {
-                $foodQuery->where(function ($w) use ($search) {
-                    $w->where('title', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
-                });
-            }
-            $foodPosts = $foodQuery->latest()->paginate(15, ['*'], 'food_page');
-        } else {
-            $foodPosts = null;
-        }
-
-        if ($type === 'skill' || $type === 'all') {
-            $skillQuery = SkillPost::with('user');
-            if ($search) {
-                $skillQuery->where(function ($w) use ($search) {
-                    $w->where('title', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
-                });
-            }
-            $skillPosts = $skillQuery->latest()->paginate(15, ['*'], 'skill_page');
-        } else {
-            $skillPosts = null;
-        }
-
-        return view('admin.posts', compact('foodPosts', 'skillPosts', 'type', 'search'));
+        // The combined posts page was superseded by the dedicated food-posts /
+        // skill-posts admin pages. Keep this route working by sending callers
+        // to the food posts manager (carrying any search term along).
+        return redirect()->route('admin.food-posts', $request->only('q'));
     }
 
     public function suspendUser(User $user)

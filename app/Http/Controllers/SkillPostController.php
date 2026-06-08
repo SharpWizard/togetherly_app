@@ -15,12 +15,14 @@ class SkillPostController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $userNeighborhood = $user->profile?->neighborhood;
-
-        $query = SkillPost::where('neighborhood', $userNeighborhood)
-            ->where('status', 'active')
+        // Community-wide: every member sees every active skill post.
+        // Neighborhood is an optional filter, not a hard restriction.
+        $query = SkillPost::where('status', 'active')
             ->with('user');
+
+        if ($neighborhood = $request->input('neighborhood')) {
+            $query->where('neighborhood', $neighborhood);
+        }
 
         // Search
         if ($search = $request->input('q')) {

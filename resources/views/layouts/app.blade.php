@@ -98,6 +98,26 @@
         }
         .tg-btn-pill:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(45,143,127,.45); color:#fff; }
 
+        /* ===== MOBILE NAV (hamburger + offcanvas) ===== */
+        .tg-burger {
+            width: 42px; height: 42px; border-radius: 12px; border: 1.5px solid #e2e8e4;
+            background: #fff; color: var(--tg-dark); font-size: 1.15rem; padding: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .tg-burger:hover { background: var(--tg-cream); color: var(--tg-green); }
+        .tg-offcanvas { width: 310px !important; max-width: 86vw; border: none; }
+        .tg-offcanvas .offcanvas-header { border-bottom: 1px solid rgba(0,0,0,.06); }
+        .tg-offcanvas .offcanvas-title { font-weight: 800; color: var(--tg-dark); }
+        .tg-mobile-link {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            border-radius: 12px; color: #3c4a45; font-weight: 600; text-decoration: none;
+            font-size: .97rem; margin-bottom: 2px;
+        }
+        .tg-mobile-link i:first-child { width: 22px; text-align: center; color: var(--tg-green); font-size: 1.05rem; }
+        .tg-mobile-link:hover, .tg-mobile-link.active { background: rgba(45,143,127,.1); color: var(--tg-green); }
+        .tg-mobile-section { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
+            color: #9aa6a0; font-weight: 700; margin: 18px 6px 8px; }
+
         /* ===== GLOBAL BUTTONS ===== */
         .btn-primary {
             background: linear-gradient(135deg, var(--tg-green), var(--tg-light));
@@ -273,13 +293,87 @@
                         </ul>
                     </div>
                 @else
+                    <!-- Guest desktop language switcher -->
+                    <div class="dropdown d-none d-lg-inline-block">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:14px;">
+                            <li><a class="dropdown-item small {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">English @if(app()->getLocale() === 'en')<i class="fas fa-check ms-2"></i>@endif</a></li>
+                            <li><a class="dropdown-item small {{ app()->getLocale() === 'ko' ? 'active' : '' }}" href="{{ route('locale.switch', 'ko') }}">한국어 @if(app()->getLocale() === 'ko')<i class="fas fa-check ms-2"></i>@endif</a></li>
+                        </ul>
+                    </div>
                     <!-- Guest Buttons -->
-                    <a class="nav-link small" href="{{ route('login') }}">Login</a>
+                    <a class="nav-link small d-none d-sm-inline-block" href="{{ route('login') }}">Login</a>
                     <a class="tg-btn-pill" href="{{ route('register') }}">Get Started</a>
                 @endauth
+
+                <!-- Mobile hamburger (all viewports < lg) -->
+                <button class="tg-burger d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile offcanvas menu (holds every feature + language switcher on phones/tablets) -->
+    <div class="offcanvas offcanvas-end tg-offcanvas" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title d-flex align-items-center gap-2" id="mobileMenuLabel">
+                <span class="tg-logo-mark">T</span> Togetherly
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            @auth
+                <div class="d-flex align-items-center gap-3 mb-2 pb-3 border-bottom">
+                    @if (Auth::user()->avatar)
+                        <img src="{{ asset('storage/'.Auth::user()->avatar) }}" class="tg-avatar" style="object-fit:cover;" alt="">
+                    @else
+                        <div class="tg-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                    @endif
+                    <div>
+                        <div class="fw-bold" style="font-size:.95rem;">{{ Auth::user()->name }}</div>
+                        <small class="text-muted">⭐ {{ number_format(Auth::user()->rating, 1) }}</small>
+                    </div>
+                </div>
+
+                <a class="tg-mobile-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="fas fa-gauge-high"></i> Dashboard</a>
+                <a class="tg-mobile-link {{ request()->routeIs('food.*') ? 'active' : '' }}" href="{{ route('food.index') }}"><i class="fas fa-utensils"></i> Food</a>
+                <a class="tg-mobile-link {{ request()->routeIs('skills.*') ? 'active' : '' }}" href="{{ route('skills.index') }}"><i class="fas fa-lightbulb"></i> Skills</a>
+                <a class="tg-mobile-link {{ request()->routeIs('favorites.*') ? 'active' : '' }}" href="{{ route('favorites.index') }}"><i class="fas fa-bookmark"></i> Saved</a>
+                <a class="tg-mobile-link {{ request()->routeIs('impact') ? 'active' : '' }}" href="{{ route('impact') }}"><i class="fas fa-leaf"></i> Impact</a>
+                @php $mUnread = \App\Models\Message::where('recipient_id', Auth::id())->where('is_read', false)->count(); @endphp
+                <a class="tg-mobile-link {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.inbox') }}"><i class="fas fa-envelope"></i> Messages @if($mUnread > 0)<span class="badge bg-danger ms-auto">{{ $mUnread }}</span>@endif</a>
+                @php $mNotes = \App\Models\Notification::where('user_id', Auth::id())->where('is_read', false)->count(); @endphp
+                <a class="tg-mobile-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}" href="{{ route('notifications.index') }}"><i class="fas fa-bell"></i> Notifications @if($mNotes > 0)<span class="badge bg-danger ms-auto">{{ $mNotes }}</span>@endif</a>
+
+                <div class="tg-mobile-section">Account</div>
+                <a class="tg-mobile-link" href="{{ route('profile.show', Auth::user()) }}"><i class="fas fa-user"></i> My Profile</a>
+                <a class="tg-mobile-link" href="{{ route('profile.edit') }}"><i class="fas fa-pen"></i> Edit Profile</a>
+                <a class="tg-mobile-link" href="{{ route('claims.index') }}"><i class="fas fa-hand-holding-heart"></i> My Claims</a>
+                <a class="tg-mobile-link" href="{{ route('bookings.index') }}"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                @if (Auth::user()->is_admin)
+                    <a class="tg-mobile-link text-primary" href="{{ route('admin.index') }}"><i class="fas fa-shield-halved"></i> Admin Panel</a>
+                @endif
+            @else
+                <a class="tg-mobile-link" href="{{ route('welcome') }}"><i class="fas fa-house"></i> Home</a>
+                <a class="tg-mobile-link" href="{{ route('login') }}"><i class="fas fa-right-to-bracket"></i> Login</a>
+                <a class="tg-mobile-link" href="{{ route('register') }}"><i class="fas fa-user-plus"></i> Get Started</a>
+            @endauth
+
+            <div class="tg-mobile-section">Language</div>
+            <a class="tg-mobile-link {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}"><i class="fas fa-globe"></i> English @if(app()->getLocale() === 'en')<i class="fas fa-check ms-auto"></i>@endif</a>
+            <a class="tg-mobile-link {{ app()->getLocale() === 'ko' ? 'active' : '' }}" href="{{ route('locale.switch', 'ko') }}"><i class="fas fa-globe"></i> 한국어 @if(app()->getLocale() === 'ko')<i class="fas fa-check ms-auto"></i>@endif</a>
+
+            @auth
+                <form action="{{ route('logout') }}" method="POST" class="mt-auto pt-3">
+                    @csrf
+                    <button class="btn btn-danger w-100" type="submit"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                </form>
+            @endauth
+        </div>
+    </div>
 
     <!-- Flash messages -->
     @if ($errors->any())

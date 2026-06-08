@@ -16,13 +16,15 @@ class FoodPostController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $userNeighborhood = $user->profile?->neighborhood;
-
-        $query = FoodPost::where('neighborhood', $userNeighborhood)
-            ->where('status', 'available')
+        // Community-wide: every member sees every available post.
+        // Neighborhood is an optional filter, not a hard restriction.
+        $query = FoodPost::where('status', 'available')
             ->where('expires_at', '>', now())
             ->with('user');
+
+        if ($neighborhood = $request->input('neighborhood')) {
+            $query->where('neighborhood', $neighborhood);
+        }
 
         // Search
         if ($search = $request->input('q')) {
@@ -73,7 +75,8 @@ class FoodPostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:5120',
+            'images.*' => 'nullable|image|max:5120',
             'food_type' => 'required|string',
             'quantity' => 'required|integer|min:1',
             'expires_at' => 'required|date|after:now',
@@ -82,14 +85,18 @@ class FoodPostController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
-        $data = $request->all();
+        $data = $request->only(['title', 'description', 'food_type', 'quantity', 'expires_at']);
         $data['user_id'] = $user->id;
         $data['neighborhood'] = $profile?->neighborhood ?? 'Unknown';
         $data['latitude'] = $profile?->latitude ?? 0;
         $data['longitude'] = $profile?->longitude ?? 0;
+        $data['status'] = 'available';
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('food', 'public');
+        // The create form's upload widget posts files as images[]; the single
+        // `image` name is kept for backward compatibility. Store the first file.
+        $imageFile = $request->file('image') ?? $request->file('images.0');
+        if ($imageFile) {
+            $data['image'] = $imageFile->store('food', 'public');
         }
 
         FoodPost::create($data);

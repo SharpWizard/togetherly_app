@@ -46,6 +46,17 @@
     <h1 class="fw-bold mb-1" style="text-align:center;">Share Food with Your Community</h1>
     <p class="text-muted text-center mb-5">Help reduce food waste - just 3 steps!</p>
 
+    @if ($errors->any())
+        <div class="alert alert-danger" style="background:#fdecea;border:1px solid #f5c2c0;color:#a4271f;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+            <strong>Please fix the following before sharing:</strong>
+            <ul style="margin:8px 0 0;padding-left:20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Progress Bar -->
     <div class="wizard-progress mb-5">
         <div class="wizard-step active" id="step1-label">
@@ -74,12 +85,12 @@
 
                     <div class="form-group">
                         <label class="form-label">Food Title *</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g., Homemade Tomato Soup" required onchange="updatePreview()">
+                        <input type="text" name="title" class="form-control" placeholder="e.g., Homemade Tomato Soup" value="{{ old('title') }}" required onchange="updatePreview()">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Description *</label>
-                        <textarea name="description" class="form-control" rows="4" placeholder="Tell people what it is and any ingredients/allergens..." required onchange="updatePreview()"></textarea>
+                        <textarea name="description" class="form-control" rows="4" placeholder="Tell people what it is and any ingredients/allergens..." required onchange="updatePreview()">{{ old('description') }}</textarea>
                     </div>
 
                     <div class="row">
@@ -88,26 +99,26 @@
                                 <label class="form-label">Food Type *</label>
                                 <select name="food_type" class="form-control" required onchange="updatePreview()">
                                     <option value="">Select type</option>
-                                    <option value="cooked">Cooked Meals</option>
-                                    <option value="raw">Vegetables & Fruits</option>
-                                    <option value="bakery">Bakery</option>
-                                    <option value="drinks">Drinks</option>
-                                    <option value="desserts">Desserts</option>
-                                    <option value="other">Other</option>
+                                    <option value="cooked" @selected(old('food_type')=='cooked')>Cooked Meals</option>
+                                    <option value="raw" @selected(old('food_type')=='raw')>Vegetables & Fruits</option>
+                                    <option value="bakery" @selected(old('food_type')=='bakery')>Bakery</option>
+                                    <option value="drinks" @selected(old('food_type')=='drinks')>Drinks</option>
+                                    <option value="desserts" @selected(old('food_type')=='desserts')>Desserts</option>
+                                    <option value="other" @selected(old('food_type')=='other')>Other</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Quantity *</label>
-                                <input type="text" name="quantity" class="form-control" placeholder="e.g., 2 liters, 5 portions" required onchange="updatePreview()">
+                                <label class="form-label">Quantity (number of portions) *</label>
+                                <input type="number" name="quantity" class="form-control" min="1" step="1" placeholder="e.g., 5" value="{{ old('quantity', 1) }}" required onchange="updatePreview()">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Expires At *</label>
-                        <input type="datetime-local" name="expires_at" class="form-control" required onchange="updatePreview()">
+                        <input type="datetime-local" name="expires_at" class="form-control" value="{{ old('expires_at') }}" required onchange="updatePreview()">
                     </div>
 
                     <div class="wizard-actions">

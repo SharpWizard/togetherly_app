@@ -16,18 +16,16 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $userNeighborhood = $user->profile?->neighborhood;
 
-        $recentFoodPosts = FoodPost::where('neighborhood', $userNeighborhood)
-            ->where('status', 'available')
+        // Community-wide recent posts so every member sees the whole community.
+        $recentFoodPosts = FoodPost::where('status', 'available')
             ->where('expires_at', '>', now())
             ->with('user')
             ->latest()
             ->limit(6)
             ->get();
 
-        $recentSkillPosts = SkillPost::where('neighborhood', $userNeighborhood)
-            ->where('status', 'active')
+        $recentSkillPosts = SkillPost::where('status', 'active')
             ->with('user')
             ->latest()
             ->limit(6)
